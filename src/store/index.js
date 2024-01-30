@@ -1,25 +1,26 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
-import thunk from "redux-thunk";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { persistReducer, persistStore } from 'redux-persist';
+import attendanceSettingReducer from './slices/attendanceSettingSlice';
+import storage from 'redux-persist/lib/storage';
+import thunk from 'redux-thunk';
 
 const persistConfig = {
-	key: "root",
-	storage,
-	// blacklist: ["userData"],
+  key: 'root',
+  storage,
 };
 
-const rootReducer = combineReducers({});
+const rootReducer = combineReducers({
+  attendanceSetting: attendanceSettingReducer,
+});
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store = configureStore({
-	reducer: persistedReducer,
-	middleware: [thunk],
-});
-
-export default configureStore({
-  reducer: {},
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: [thunk],
 });
 
 export const persistor = persistStore(store);
+export default store;
+
+//reqct-query, redux-persist

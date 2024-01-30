@@ -1,20 +1,13 @@
-import React from "react";
+import React from 'react';
 
 const Home = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className='main'>
+        <p className='text-3xl font-bold'>Home</p>
+      </div>
+    </>
   );
-}
+};
 
 export default Home;
