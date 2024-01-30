@@ -1,0 +1,28 @@
+#  Template NodeJS build
+
+#  This template allows you to validate your NodeJS code.
+#  The workflow allows running tests and code linting on the default branch.
+
+image: node:16
+
+pipelines:
+  branches:
+    stage:
+      - step:
+          runs-on:
+            - self.hosted
+            - linux.shell
+            - timhut.stage
+          script:
+            - whoami
+            - cd /mnt/volume_sgp1_02/attendance-fe
+            - git checkout stage
+            - git stash
+            - rm -rf package-lock.json
+            - git pull
+            - npm install --force
+            - CI=false npm run build:stage
+            - cd ./build
+            - sudo rm -rf /var/www/html/attendance/*
+            - sudo cp -a . /var/www/html/attendance/
+            - sudo systemctl restart apache2
