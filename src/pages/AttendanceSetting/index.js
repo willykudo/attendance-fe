@@ -96,7 +96,7 @@ const AttendanceSetting = () => {
             label='Multiply'
             name={`overtime_multipler_multiply-${overtimeMultipler.length}`}
             unit={''}
-            pluralize={true}
+            pluralize={false}
             value={0}
           />
         </div>
@@ -223,7 +223,9 @@ const AttendanceSetting = () => {
 
       <div className='mt-5 overtime-settings'>
         <Accordion title='Overtime Rounding Settings'>
-          <div className='pr-2 pl-2 font-semibold mt-2'>Balance Generated</div>
+          <div className='pr-2 pl-2 font-semibold mt-2'>
+            <p className='text-sm'>Balance Generated</p>
+          </div>
 
           {settings.map((setting) => (
             <React.Fragment key={setting.key}>
@@ -257,7 +259,9 @@ const AttendanceSetting = () => {
 
       <div className='mt-5 overtime-multipler'>
         <Accordion title='Overtime Multipler'>
-          <div className='pr-2 pl-2 font-semibold mt-2'>Balance Generated</div>
+          <div className='pr-2 pl-2 font-semibold mt-2'>
+            <p className='text-sm'>Balance Generated</p>
+          </div>
 
           {overtimeMultipler.map((item, index, array) => (
             <React.Fragment key={item.key}>

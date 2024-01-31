@@ -31,6 +31,7 @@ const AttendanceData = () => {
             label={'Time Range'}
             options={dataTimeRange}
             required={false}
+            width={'250px'}
           />
         </div>
         <div className='pl-4 input-select'>
@@ -39,6 +40,7 @@ const AttendanceData = () => {
             label={'Locations'}
             options={dataLocation}
             required={false}
+            width={'180px'}
           />
         </div>
         <div className='pl-4 input-select'>
@@ -47,6 +49,7 @@ const AttendanceData = () => {
             label={'Departments'}
             options={dataDepartment}
             required={false}
+            width={'180px'}
           />
         </div>
         <div className='ml-auto flex'>

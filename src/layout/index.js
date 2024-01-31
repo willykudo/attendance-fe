@@ -16,7 +16,10 @@ const Layout = () => {
       icon: <UserSVG className='w-6 h-6 mx-1' />,
       isActive: true,
       label: (
-        <div className='font-lato text-md' onClick={() => navigate('/')}>
+        <div
+          className='font-lato text-sm font-semibold'
+          onClick={() => navigate('/')}
+        >
           Attendance Data
         </div>
       ),
@@ -26,7 +29,7 @@ const Layout = () => {
       isActive: true,
       label: (
         <div
-          className='font-lato text-md'
+          className='font-lato text-sm font-semibold'
           onClick={() => navigate('/attendance-approval')}
         >
           Attendance Approval
@@ -38,10 +41,10 @@ const Layout = () => {
       isActive: false,
       label: (
         <div
-          className='font-lato text-md'
+          className='font-lato text-sm font-semibold'
           onClick={() => navigate('/attendance-overtime')}
         >
-          Overtime
+          <p>Overtime</p>
         </div>
       ),
     },
@@ -50,10 +53,10 @@ const Layout = () => {
       isActive: false,
       label: (
         <div
-          className='font-lato text-md'
+          className='font-lato text-sm font-semibold'
           onClick={() => navigate('/attendance-setting')}
         >
-          Attedance Setting
+          Attendance Setting
         </div>
       ),
     },
@@ -78,7 +81,7 @@ const Layout = () => {
     <>
       <div className='main'>
         <div className='flex h-screen'>
-          <Sidebar menuItems={menuItems} width={'w-1/5'} />
+          <Sidebar menuItems={menuItems} width={'w-200px'} />
 
           <div className='flex-1 flex flex-col overflow-hidden'>
             <div className='flex-shrink-0'>
