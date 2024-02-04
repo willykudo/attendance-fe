@@ -3,6 +3,8 @@ import {
   SearchBox,
   Button,
   WidgetCard,
+  ColorTag,
+  DataTable,
 } from '@bluesilodev/timhutcomponents';
 
 const AttendanceData = () => {
@@ -21,6 +23,41 @@ const AttendanceData = () => {
   ];
 
   const dataDepartment = [{ value: 'All Department', label: 'All Department' }];
+
+  const dataTable = [
+    {
+      employee_name: 'John Doe',
+      employee_id: 'Cafe Halim',
+      job_position: 'IT',
+      shift: 'Morning Shift',
+      punch_in: {
+        time: '08:00',
+        date: '25 August 2023',
+      },
+      punch_out: {
+        time: '17:00',
+        date: '25 August 2023',
+      },
+      total_hour: '10 Hours',
+      status: 'Present',
+    },
+    {
+      employee_name: 'Harley',
+      employee_id: 'Cafe Halim',
+      job_position: 'IT',
+      shift: 'Night Shift',
+      punch_in: {
+        time: '20:00',
+        date: '25 August 2023',
+      },
+      punch_out: {
+        time: '05:00',
+        date: '26 August 2023',
+      },
+      total_hour: '9 Hours',
+      status: 'Present',
+    },
+  ];
 
   return (
     <div className='main pl-6 pr-10 mt-10'>
@@ -209,6 +246,72 @@ const AttendanceData = () => {
             </div>
           </div>
         </WidgetCard>
+      </div>
+      <div className=' mt-5'>
+        <DataTable
+          title='Attendance Data'
+          columns={[
+            {
+              id: 'employee_name',
+              accessorFn: (row) => row.employee_name,
+              header: () => <span>Employee</span>,
+              enableSorting: true,
+            },
+            {
+              id: 'employee_id',
+              accessorFn: (row) => row.employee_id,
+              header: () => <span>Employee ID</span>,
+              enableSorting: true,
+            },
+            {
+              id: 'job_position',
+              accessorFn: (row) => row.job_position,
+              header: () => <span>Job Position</span>,
+              enableSorting: true,
+            },
+            {
+              id: 'shift',
+              accessorFn: (row) => row.shift,
+              header: () => <span>Shift</span>,
+              enableSorting: true,
+            },
+            {
+              id: 'punch_in',
+              accessorFn: (row) => `${row.punch_in.time} ${row.punch_in.date}`,
+              header: () => <span>Punch In</span>,
+              enableSorting: true,
+            },
+            {
+              id: 'punch_out',
+              accessorFn: (row) =>
+                `${row.punch_out.time} ${row.punch_out.date}`,
+              header: () => <span>Punch Out</span>,
+              enableSorting: true,
+            },
+            {
+              id: 'total_hour',
+              accessorFn: (row) => row.total_hour,
+              header: () => <span>Total Hours</span>,
+              enableSorting: true,
+            },
+            {
+              id: 'status',
+              accessorFn: (row) => row.status,
+              header: () => <span>Status</span>,
+              enableSorting: false,
+              Cell: ({ cell }) => (
+                <ColorTag
+                  value={cell.row.original.value}
+                  label={cell.row.original.label}
+                  color={cell.row.original.color}
+                  customColor={cell.row.original.customColor}
+                />
+              ),
+            },
+          ]}
+          data={dataTable}
+          pagination={true}
+        />
       </div>
     </div>
   );
