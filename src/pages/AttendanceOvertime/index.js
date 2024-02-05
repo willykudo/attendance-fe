@@ -1,9 +1,4 @@
-import {
-  InputSelect,
-  SearchBox,
-  Button,
-  WidgetCard,
-} from '@bluesilodev/timhutcomponents';
+import { InputSelect, SearchBox, Button } from '@bluesilodev/timhutcomponents';
 
 const AttendanceOvertime = () => {
   const dataTimeRange = [

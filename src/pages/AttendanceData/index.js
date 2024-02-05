@@ -3,7 +3,6 @@ import {
   SearchBox,
   Button,
   WidgetCard,
-  ColorTag,
   DataTable,
 } from '@bluesilodev/timhutcomponents';
 
@@ -299,14 +298,6 @@ const AttendanceData = () => {
               accessorFn: (row) => row.status,
               header: () => <span>Status</span>,
               enableSorting: false,
-              Cell: ({ cell }) => (
-                <ColorTag
-                  value={cell.row.original.value}
-                  label={cell.row.original.label}
-                  color={cell.row.original.color}
-                  customColor={cell.row.original.customColor}
-                />
-              ),
             },
           ]}
           data={dataTable}

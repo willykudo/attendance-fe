@@ -1,7 +1,6 @@
 // AppRouter.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from 'pages/Home';
 import AttendanceData from 'pages/AttendanceData';
 import AttendanceSetting from 'pages/AttendanceSetting';
 import AttendanceOvertime from 'pages/AttendanceOvertime';
