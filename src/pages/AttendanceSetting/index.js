@@ -118,9 +118,9 @@ const AttendanceSetting = () => {
     setOvertimeMultipler(updatedMultipler);
   };
   return (
-    <div className='main pl-6 pr-10 mt-10'>
-      <div className='flex flex-col'>
-        <div className='button-save flex justify-end'>
+    <div className='main w-full pl-6 pr-6 mt-10'>
+      <div className='flex justify-end'>
+        <div className='button-save'>
           <Button label={'Save'} width={'200'} />
         </div>
       </div>

@@ -1,6 +1,8 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import attendanceSettingReducer from './slices/attendanceSettingSlice';
+import attendanceDataSlice from './slices/attendanceDataSlice';
+import authReducer from './slices/authSlice';
 import storage from 'redux-persist/lib/storage';
 import thunk from 'redux-thunk';
 
@@ -11,6 +13,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   attendanceSetting: attendanceSettingReducer,
+  auth: authReducer,
+  attendanceData: attendanceDataSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -22,5 +26,3 @@ const store = configureStore({
 
 export const persistor = persistStore(store);
 export default store;
-
-//reqct-query, redux-persist

@@ -1,63 +1,80 @@
 import React from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation, NavLink } from 'react-router-dom';
 
 import { Sidebar, Header } from '@bluesilodev/timhutcomponents';
 
 import UserSVG from 'assets/icon/UserSVG/UserSVG';
 import FiHeartSVG from 'assets/icon/FiHeartSVG/FiHeartSVG';
-import FiUserSVG from 'assets/icon/FiUserSVG/FiUserSVG';
 
 const Layout = () => {
-  const navigate = useNavigate();
   const location = useLocation();
 
-  const menuItems = [
+  const allMenu = [
     {
-      icon: <UserSVG className='w-6 h-6 mx-1' />,
-      isActive: true,
       label: (
-        <div
-          className='font-lato text-sm font-semibold'
-          onClick={() => navigate('/')}
+        <NavLink
+          to={'/'}
+          className={`${
+            location.pathname === '/' && 'bg-orange-500 text-white'
+          } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
         >
-          Attendance Data
-        </div>
+          <UserSVG color={`${location.pathname === '/' ? 'white' : 'black'}`} />
+          <h1>Attendance Data</h1>
+        </NavLink>
       ),
     },
     {
-      icon: <FiUserSVG className='w-6 h-6 mx-1' />,
-      isActive: true,
       label: (
-        <div
-          className='font-lato text-sm font-semibold'
-          onClick={() => navigate('/attendance-approval')}
+        <NavLink
+          to={'/attendance-approval'}
+          className={`${
+            location.pathname === '/attendance-approval' &&
+            'bg-orange-500 text-white'
+          } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
         >
-          Attendance Approval
-        </div>
+          <FiHeartSVG
+            color={`${
+              location.pathname === '/attendance-approval' ? 'white' : 'black'
+            }`}
+          />
+          <h1>Attendance Overtime</h1>
+        </NavLink>
       ),
     },
     {
-      icon: <FiHeartSVG className='w-6 h-6 mx-1' />,
-      isActive: false,
       label: (
-        <div
-          className='font-lato text-sm font-semibold'
-          onClick={() => navigate('/attendance-overtime')}
+        <NavLink
+          to={'/attendance-overtime'}
+          className={`${
+            location.pathname === '/attendance-overtime' &&
+            'bg-orange-500 text-white'
+          } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
         >
-          <p>Overtime</p>
-        </div>
+          <FiHeartSVG
+            color={`${
+              location.pathname === '/attendance-overtime' ? 'white' : 'black'
+            }`}
+          />
+          <h1>Attendance Overtime</h1>
+        </NavLink>
       ),
     },
     {
-      icon: <FiHeartSVG className='w-6 h-6 mx-1' />,
-      isActive: false,
       label: (
-        <div
-          className='font-lato text-sm font-semibold'
-          onClick={() => navigate('/attendance-setting')}
+        <NavLink
+          to={'/attendance-setting'}
+          className={`${
+            location.pathname === '/attendance-setting' &&
+            'bg-orange-500 text-white'
+          } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
         >
-          Attendance Setting
-        </div>
+          <FiHeartSVG
+            color={`${
+              location.pathname === '/attendance-setting' ? 'white' : 'black'
+            }`}
+          />
+          <h1>Attendance Setting</h1>
+        </NavLink>
       ),
     },
   ];
@@ -78,23 +95,29 @@ const Layout = () => {
   };
 
   return (
-    <>
-      <div className='main'>
-        <div className='flex h-screen'>
-          <Sidebar menuItems={menuItems} width={'w-200px'} />
+    <div className='w-full flex justify-center items-center '>
+      <div className='flex w-full'>
+        <div className='w-[300px] '>
+          <Sidebar menuItems={allMenu} />
+        </div>
 
-          <div className='flex-1 flex flex-col overflow-hidden'>
-            <div className='flex-shrink-0'>
-              <Header title={getTitle()} />
-            </div>
-
-            <div className='flex-1 overflow-x-hidden overflow-y-auto p-4'>
-              <Outlet />
-            </div>
+        <div className='flex flex-col w-full'>
+          <div className='px-6'>
+            <Header
+              title={getTitle()}
+              userData={{
+                name: 'Dan Lim',
+                role: 'HR Admin',
+                language: 'English',
+                switchRole: 'User',
+              }}
+            />
           </div>
+
+          <Outlet />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
