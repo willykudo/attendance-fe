@@ -251,6 +251,108 @@ const AttendanceApproval = () => {
                     }
                   },
                 },
+                {
+                  id: 'approval_by_supervisor',
+                  header: () => <span>Approval by Supervisor</span>,
+                  accessorFn: (row) => row.approval,
+                  onclick: (row) => {
+                    console.log(row.approval);
+                  },
+                  enableSorting: false,
+                  cell: (status) => {
+                    const approvalStatus = status.getValue();
+
+                    if (approvalStatus === 'Approved') {
+                      return (
+                        <>
+                          <div
+                            className=' font-semibold'
+                            style={{ color: 'white' }}
+                          >
+                            <ColorTag label={approvalStatus} color='green' />
+                          </div>
+                        </>
+                      );
+                    }
+                    if (approvalStatus === 'Rejected') {
+                      return (
+                        <>
+                          <div
+                            className='font-semibold'
+                            style={{ color: 'white' }}
+                          >
+                            <ColorTag label={approvalStatus} color='red' />
+                          </div>
+                        </>
+                      );
+                    }
+                    if (approvalStatus === 'Pending') {
+                      return (
+                        <>
+                          <div
+                            className=' font-semibold text-white cursor-pointer'
+                            onClick={() =>
+                              navigate('/attendance-approval/approval')
+                            }
+                          >
+                            <ColorTag label={approvalStatus} color='gray' />
+                          </div>
+                        </>
+                      );
+                    }
+                  },
+                },
+                {
+                  id: 'approval_by_admin',
+                  header: () => <span>Approval by HR Admin</span>,
+                  accessorFn: (row) => row.approval,
+                  onclick: (row) => {
+                    console.log(row.approval);
+                  },
+                  enableSorting: false,
+                  cell: (status) => {
+                    const approvalStatus = status.getValue();
+
+                    if (approvalStatus === 'Approved') {
+                      return (
+                        <>
+                          <div
+                            className=' font-semibold'
+                            style={{ color: 'white' }}
+                          >
+                            <ColorTag label={approvalStatus} color='green' />
+                          </div>
+                        </>
+                      );
+                    }
+                    if (approvalStatus === 'Rejected') {
+                      return (
+                        <>
+                          <div
+                            className='font-semibold'
+                            style={{ color: 'white' }}
+                          >
+                            <ColorTag label={approvalStatus} color='red' />
+                          </div>
+                        </>
+                      );
+                    }
+                    if (approvalStatus === 'Pending') {
+                      return (
+                        <>
+                          <div
+                            className=' font-semibold text-white cursor-pointer'
+                            onClick={() =>
+                              navigate('/attendance-approval/approval')
+                            }
+                          >
+                            <ColorTag label={approvalStatus} color='gray' />
+                          </div>
+                        </>
+                      );
+                    }
+                  },
+                },
               ]}
               data={dataTable}
               pagination={true}
