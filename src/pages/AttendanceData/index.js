@@ -11,9 +11,11 @@ import {
   WidgetCard,
   DataTable,
   TextArea,
+  ColorTag,
 } from '@bluesilodev/timhutcomponents';
 
 import ModalDialog from './ModalDialog';
+import DateDisplay from 'components/formatedDateTime';
 
 const AttendanceData = () => {
   const dispatch = useDispatch();
@@ -22,7 +24,43 @@ const AttendanceData = () => {
 
   const { data, error, isLoading } = useAttendanceData();
 
-  console.log(data.attendances);
+  let dataLength;
+
+  if (data && data.data) {
+    dataLength = data.data.length;
+  } else {
+    dataLength = 0;
+  }
+
+  // Calculated Total Hours
+  const calculateTotalHours = (punchIn, punchOut) => {
+    if (!punchOut) {
+      return '0 Hours 0 minutes';
+    }
+
+    const punchInTime = new Date(punchIn);
+    const punchOutTime = new Date(punchOut);
+
+    const timeDifference = punchOutTime - punchInTime;
+
+    const hours = Math.floor(timeDifference / (1000 * 60 * 60));
+    const minutes = Math.floor(
+      (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+    );
+
+    return `${hours} Hours ${minutes} minutes`;
+  };
+
+  // Format Date
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+
+    const formattedDate = date.toLocaleDateString('en-GB', options);
+
+    return formattedDate;
+  };
 
   useEffect(() => {
     const email = 'user2@gmail.com';
@@ -53,19 +91,6 @@ const AttendanceData = () => {
     handleCloseModal();
   };
 
-  const dummyData = [
-    {
-      punchIn: 'some day',
-      punchOut: 'some day',
-    },
-    {
-      punchIn: 'some day',
-      punchOut: 'some day',
-    },
-  ];
-
-  console.log('dummy data', dummyData);
-
   const dataTimeRange = [
     'Today',
     'Past Week',
@@ -91,21 +116,38 @@ const AttendanceData = () => {
         >
           <div className='grid grid-cols-3 gap-6'>
             <div className='col-span-1'>
-              <InputSelect title={'Locations'} options={dataLocation} />
+              <InputSelect
+                title={'Locations'}
+                options={dataLocation}
+                classname={' h-[58px]'}
+              />
             </div>
             <div className='col-span-1'>
-              <InputSelect title={'Departments'} options={['Operations']} />
+              <InputSelect
+                title={'Departments'}
+                options={['Operations']}
+                classname={' h-[58px]'}
+              />
             </div>
             <div className='col-span-1'>
-              <InputSelect title={'Job Positions'} options={['Cook']} />
+              <InputSelect
+                title={'Job Positions'}
+                options={['Cook']}
+                classname={' h-[58px]'}
+              />
             </div>
             <div className='col-span-1 row-span-2'>
-              <InputSelect title={'Employee Name'} options={['Operations']} />
+              <InputSelect
+                title={'Employee Name'}
+                options={['Operations']}
+                classname={' h-[58px]'}
+              />
             </div>
             <div className='col-span-1'>
               <InputSelect
                 title={'Shift'}
                 options={['Morning Shift', 'Night Shift']}
+                classname={' h-[58px]'}
               />
             </div>
           </div>
@@ -114,12 +156,14 @@ const AttendanceData = () => {
               <InputSelect
                 title={'Punch In Date'}
                 options={['24 August 2023', '25 August 2023']}
+                classname={'h-[58px]'}
               />
             </div>
             <div className='col-span-1'>
               <InputSelect
                 title={'Punch In Time'}
                 options={['07:00', '08:00']}
+                classname={' h-[58px]'}
               />
             </div>
           </div>
@@ -128,12 +172,14 @@ const AttendanceData = () => {
               <InputSelect
                 title={'Punch Out Date'}
                 options={['24 August 2023', '25 August 2023']}
+                classname={' h-[58px]'}
               />
             </div>
             <div className='col-span-1'>
               <InputSelect
                 title={'Punch Out Time'}
                 options={['07:00', '08:00']}
+                classname={' h-[58px]'}
               />
             </div>
           </div>
@@ -158,21 +204,37 @@ const AttendanceData = () => {
       )}
       <div className='flex items-center'>
         <div className='input-select w-[300px] '>
-          <InputSelect title={'Time Range'} options={dataTimeRange} />
+          <InputSelect
+            title={'Time Range'}
+            options={dataTimeRange}
+            classname={' h-[58px]'}
+          />
         </div>
         <div className='pl-4 input-select w-[250px]'>
-          <InputSelect title={'Locations'} options={dataLocation} />
+          <InputSelect
+            title={'Locations'}
+            options={dataLocation}
+            classname={' h-[58px]'}
+          />
         </div>
         <div className='pl-4 input-select w-[250px]'>
-          <InputSelect title={'Departments'} options={dataDepartment} />
+          <InputSelect
+            title={'Departments'}
+            options={dataDepartment}
+            classname={' h-[58px]'}
+          />
         </div>
         <div className='ml-auto flex'>
           <div>
-            <SearchBox onChange={() => {}} />
+            <SearchBox onChange={() => {}} className={'h-[58px] w-[250px]'} />
           </div>
 
           <div className='my-auto ml-4 '>
-            <Button label={'Request Attendance'} onClick={handleOpenModal} />
+            <Button
+              label={'Request Attendance'}
+              onClick={handleOpenModal}
+              className={'w-[220px] h-[58px]'}
+            />
           </div>
         </div>
       </div>
@@ -365,25 +427,27 @@ const AttendanceData = () => {
         </div>
       </div>
       <div className=' mt-5'>
-        {data.attendances.length > 0 && (
+        {dataLength > 0 && (
           <DataTable
             title='Attendance Data'
             columns={[
               {
-                id: 'employeeID',
-                accessorFn: (row) => row.employeeID,
+                id: 'employeeInfo',
+                accessorFn: (row) => {
+                  return `${row.employeeInfo.data.firstName} ${row.employeeInfo.data.lastName}`;
+                },
                 header: () => <span>Employee</span>,
                 enableSorting: true,
               },
               {
-                id: 'uId',
-                accessorFn: (row) => row.uId,
+                id: 'employeeID',
+                accessorFn: (row) => row.employeeID,
                 header: () => <span>Employee ID</span>,
                 enableSorting: true,
               },
               {
-                id: 'department',
-                accessorFn: (row) => row.department,
+                id: 'jobPosition',
+                accessorFn: (row) => row.employeeInfo.data.role,
                 header: () => <span>Job Position</span>,
                 enableSorting: true,
               },
@@ -395,19 +459,30 @@ const AttendanceData = () => {
               },
               {
                 id: 'punchIn',
-                accessorFn: (row) => `${row.punchIn} `,
+                accessorFn: (row) => row.punchIn,
                 header: () => <span>Punch In</span>,
+                cell: (date) => {
+                  const dateStr = date.getValue();
+
+                  return <DateDisplay dateStr={dateStr} />;
+                },
                 enableSorting: true,
               },
               {
                 id: 'punchOut',
-                accessorFn: (row) => `${row.punchOut} `,
+                accessorFn: (row) => row.punchOut,
                 header: () => <span>Punch Out</span>,
+                cell: (date) => {
+                  const dateStr = date.getValue();
+
+                  return <DateDisplay dateStr={dateStr} />;
+                },
                 enableSorting: true,
               },
               {
-                id: 'organizationID',
-                accessorFn: (row) => row.organizationID,
+                id: 'totalHours',
+                accessorFn: (row) =>
+                  calculateTotalHours(row.punchIn, row.punchOut),
                 header: () => <span>Total Hours</span>,
                 enableSorting: true,
               },
@@ -416,9 +491,31 @@ const AttendanceData = () => {
                 accessorFn: (row) => row.status,
                 header: () => <span>Status</span>,
                 enableSorting: false,
+                cell: (status) => {
+                  const recordStatus = status.getValue();
+
+                  if (recordStatus === 'On Time') {
+                    return (
+                      <>
+                        <div className='font-semibold'>
+                          <ColorTag label={recordStatus} color='green' />
+                        </div>
+                      </>
+                    );
+                  }
+                  if (recordStatus === 'Late') {
+                    return (
+                      <>
+                        <div className=' font-semibold'>
+                          <ColorTag label={recordStatus} color='red' />
+                        </div>
+                      </>
+                    );
+                  }
+                },
               },
             ]}
-            data={data.attendances}
+            data={data.data}
             pagination={true}
           />
         )}

@@ -10,7 +10,6 @@ export const login = async (email, password) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('Login success, Token:', data.token);
       return data;
     } else {
       console.error('Login failed:', response.status);
