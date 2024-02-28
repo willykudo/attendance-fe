@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@bluesilodev/timhutcomponents": "^0.3.8",
+    "@bluesilodev/timhutcomponents": "^0.1.8",
     "@heroicons/react": "^2.1.1",
     "@reduxjs/toolkit": "^1.9.6",
     "@testing-library/jest-dom": "^5.17.0",
