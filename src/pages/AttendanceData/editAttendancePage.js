@@ -7,22 +7,14 @@ import {
   InputText,
 } from '@bluesilodev/timhutcomponents';
 
-const ApprovalPage = () => {
+const EditAttendance = () => {
   return (
     <div className='main pl-6 pr-6 mt-10'>
-      <div className='flex justify-between'>
-        <div className='text-xs flex items-center font-bold'>
-          <p>Requested On 24 August 2023, 13:03</p>
-        </div>
-        <div className='flex items-end'>
+      <div className='flex'>
+        <div className=''>
           <Button
-            label={'Reject'}
-            className={'w-[220px] h-[50px] mr-4'}
-            style='solid'
-          />
-          <Button
-            label={'Approve'}
-            className={'w-[220px] h-[50px] '}
+            label={'Edit Attendance'}
+            className={'w-[220px] h-[50px]'}
             style='solid'
           />
         </div>
@@ -102,6 +94,39 @@ const ApprovalPage = () => {
                     disable={true}
                     value={'Supervisor'}
                   />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Accordion>
+      </div>
+
+      {/* Overtime */}
+      <div className='mt-8'>
+        <Accordion title={'Overtime'}>
+          <div className='p-4 flex'>
+            <div className='w-full'>
+              <div className='grid grid-cols-3 gap-6 '>
+                <div className='col-span-1'>
+                  <InputText
+                    label={'Compensation Type'}
+                    classname={'h-[58px]'}
+                    value={'Paid Overtime'}
+                    disable={true}
+                  />
+                </div>
+                <div className='col-span-1'>
+                  <InputText
+                    label={'Overtime Duration'}
+                    classname={'h-[58px]'}
+                    value={'1 Hours '}
+                    disable={true}
+                  />
+                </div>
+              </div>
+              <div className='grid grid-cols-3 gap-6 mt-5'>
+                <div className='col-span-2 h-[200px]'>
+                  <TextArea label={'Description'} required={false} />
                 </div>
               </div>
             </div>
@@ -265,4 +290,4 @@ const ApprovalPage = () => {
   );
 };
 
-export default ApprovalPage;
+export default EditAttendance;

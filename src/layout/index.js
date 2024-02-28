@@ -16,12 +16,19 @@ const Layout = () => {
     {
       label: (
         <NavLink
-          to={'/'}
+          to={'/attendance-data'}
           className={`${
-            location.pathname === '/' && 'bg-orange-500 text-white'
+            location.pathname.startsWith('/attendance-data') &&
+            'bg-orange-500 text-white'
           } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
         >
-          <UserSVG color={`${location.pathname === '/' ? 'white' : 'black'}`} />
+          <UserSVG
+            color={`${
+              location.pathname.startsWith('/attendance-data')
+                ? 'white'
+                : 'black'
+            }`}
+          />
           <h1>Attendance Data</h1>
         </NavLink>
       ),
@@ -96,7 +103,7 @@ const Layout = () => {
 
   const getTitle = () => {
     switch (location.pathname) {
-      case '/':
+      case '/attendance-data':
         return (
           <div
             className='items-center justify-center text-3xl
@@ -193,7 +200,14 @@ const Layout = () => {
           </div>
         );
       default:
-        return 'Attendance';
+        return (
+          <div
+            className='items-center justify-center text-3xl
+            '
+          >
+            Attendance
+          </div>
+        );
     }
   };
 

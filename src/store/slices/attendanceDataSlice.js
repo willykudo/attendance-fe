@@ -27,13 +27,19 @@ const attendanceDataSlice = createSlice({
   },
 });
 
-export const useAttendanceData = () => {
+export const useAttendanceData = (queryParams) => {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
-  const { data, error, isLoading, refetch } = useQuery('attendanceData', () =>
-    fetchAttendanceData(token)
+  const { data, error, isLoading } = useQuery(
+    ['attendanceData', queryParams], // Pass queryParams as part of the key
+    () => fetchAttendanceData(token, queryParams),
+    {
+      refetchOnWindowFocus: true,
+      staleTime: 1000 * 60 * 5,
+    }
   );
+
   const initialData = data || { attendances: [] };
 
   useEffect(() => {
@@ -51,11 +57,6 @@ export const useAttendanceData = () => {
       dispatch(attendanceDataSlice.actions.fetchError(error));
     }
   }, [error, dispatch]);
-
-  // Add an effect to re-fetch data on component mount (page reload)
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
 
   return { data: initialData, error, isLoading };
 };

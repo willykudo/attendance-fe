@@ -8,6 +8,9 @@ import {
   RadioButton,
   CheckBox,
 } from '@bluesilodev/timhutcomponents';
+import DeleteSVG from 'assets/icon/DeleteSVG/DeleteSVG';
+import ArrowRight from 'assets/icon/ArrowRight/ArrowRight';
+import BarsSVG from 'assets/icon/BarsSVG/BarsSVG';
 
 const CustomInputNumber = styled.div`
   div {
@@ -32,7 +35,9 @@ const AttendanceSetting = () => {
         </div>
         <div className='flex flex-col item-center mx-2 '>
           <button className='border-2 border-slate-500 rounded-[50%] p-2 my-2 hover:bg-gray-200'>
-            <div className='w-6 h-6'> P </div>
+            <div className='w-6 h-6 flex justify-center items-center'>
+              <ArrowRight />
+            </div>
           </button>
         </div>
         <div className='pl-2 py-2 pr-2'>
@@ -45,7 +50,9 @@ const AttendanceSetting = () => {
         </div>
         <div className='flex flex-col item-center mx-2 '>
           <button className='border-2 border-slate-500 rounded-[50%] p-2 my-2 hover:bg-gray-200'>
-            <div className='w-6 h-6'> = </div>
+            <div className='w-6 h-6 flex justify-center items-center'>
+              <BarsSVG />
+            </div>
           </button>
         </div>
         <div className='pl-2 py-2 pr-2'>
@@ -75,7 +82,9 @@ const AttendanceSetting = () => {
         </div>
         <div className='flex flex-col item-center mx-2 '>
           <button className='border-2 border-slate-500 rounded-[50%] p-2 my-2 hover:bg-gray-200'>
-            <div className='w-6 h-6'> P </div>
+            <div className='w-6 h-6 flex justify-center items-center'>
+              <ArrowRight />
+            </div>
           </button>
         </div>
         <div className='pl-2 py-2 pr-2'>
@@ -88,7 +97,11 @@ const AttendanceSetting = () => {
         </div>
         <div className='flex flex-col item-center mx-2 '>
           <button className='border-2 border-slate-500 rounded-[50%] p-2 my-2 hover:bg-gray-200'>
-            <div className='w-6 h-6'> = </div>
+            <div>
+              <div className='w-6 h-6 flex justify-center items-center'>
+                <BarsSVG />
+              </div>
+            </div>
           </button>
         </div>
         <div className='pl-2 py-2 pr-2'>
@@ -237,7 +250,9 @@ const AttendanceSetting = () => {
                       className='border-2 border-slate-500 rounded-[50%] p-2 my-2 hover:bg-gray-200'
                       onClick={() => handleDelete(setting.key)}
                     >
-                      <div className='w-6 h-6'> T </div>
+                      <div className='w-6 h-6 flex items-center justify-center'>
+                        <DeleteSVG />
+                      </div>
                     </button>
                   </div>
                 </div>
@@ -284,10 +299,12 @@ const AttendanceSetting = () => {
                       </div>
                     )}
                     <button
-                      className='border-2 border-slate-500 rounded-[50%] p-2 my-2 hover:bg-gray-200'
+                      className='border-2 border-slate-500 rounded-[50%] p-2 my-2 hover:bg-gray-200 '
                       onClick={() => handleDeleteMultipler(item.key)}
                     >
-                      <div className='w-6 h-6'> T </div>
+                      <div className='w-6 h-6 flex items-center justify-center'>
+                        <DeleteSVG />
+                      </div>
                     </button>
                   </div>
                 </div>

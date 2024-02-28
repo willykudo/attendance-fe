@@ -8,14 +8,18 @@ import AttendanceApproval from 'pages/AttendanceApproval';
 import Layout from 'layout/index';
 import ApprovalPage from 'pages/AttendanceApproval/approvalPage';
 import OvertimeApproval from 'pages/AttendanceOvertime/overtimeApproval';
+import EditAttendance from 'pages/AttendanceData/editAttendancePage';
 
 const AppRouter = () => {
   return (
     <Router>
       <Routes>
         <Route path='/' element={<Layout />}>
-          <Route index element={<AttendanceData />} />
-          <Route path='/attendance-approval' element={<AttendanceApproval />}>
+          <Route path='attendance-data' element={<AttendanceData />}>
+            <Route path=':id' element={<EditAttendance />} />
+          </Route>
+          <Route path='edit-attendance' element={<EditAttendance />} />
+          <Route path='attendance-approval' element={<AttendanceApproval />}>
             <Route path='approval' element={<ApprovalPage />} />
           </Route>
           <Route path='attendance-overtime' element={<AttendanceOvertime />}>
