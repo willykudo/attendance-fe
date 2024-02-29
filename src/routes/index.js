@@ -16,7 +16,7 @@ const AppRouter = () => {
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route path='attendance-data' element={<AttendanceData />}>
-            <Route path=':id' element={<EditAttendance />} />
+            <Route path=':uId' element={<EditAttendance />} />
           </Route>
           <Route path='edit-attendance' element={<EditAttendance />} />
           <Route path='attendance-approval' element={<AttendanceApproval />}>

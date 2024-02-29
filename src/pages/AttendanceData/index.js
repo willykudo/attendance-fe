@@ -563,7 +563,7 @@ const AttendanceData = () => {
                       return (
                         <>
                           <div
-                            className={`font-semibold ${
+                            className={`${
                               role === 'admin' ? 'cursor-pointer' : ''
                             }`}
                             onClick={handleClick}

@@ -102,111 +102,40 @@ const Layout = () => {
   ];
 
   const getTitle = () => {
-    switch (location.pathname) {
-      case '/attendance-data':
+    const pathSegments = location.pathname.split('/').filter(Boolean);
+
+    switch (pathSegments[0]) {
+      case 'attendance-data':
         return (
-          <div
-            className='items-center justify-center text-3xl
-            '
-          >
-            Attendance Data
+          <div className='items-center justify-center text-3xl'>
+            {pathSegments.length > 1 ? 'Attendance Details' : 'Attendance Data'}
           </div>
         );
-      case '/attendance-approval':
+
+      case 'attendance-approval':
         return (
-          <div
-            className='items-center justify-center text-3xl
-            '
-          >
+          <div className='items-center justify-center text-3xl'>
             Attendance Approval
           </div>
         );
-      case '/attendance-approval/approval':
+
+      case 'attendance-overtime':
         return (
-          <div className='flex'>
-            <div
-              className='flex items-center justify-center cursor-pointer'
-              onClick={() => navigate(-1)}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke-width='1.5'
-                stroke='currentColor'
-                class='w-6 h-6'
-              >
-                <path
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18'
-                />
-              </svg>
-            </div>
-            <div
-              className='ml-2 flex items-center justify-center text-3xl
-            '
-            >
-              Attendance Details
-            </div>
+          <div className='items-center justify-center text-3xl'>
+            {pathSegments.length > 1 ? 'Overtime Details' : 'Overtime'}
           </div>
         );
-      case '/attendance-overtime':
+
+      case 'attendance-setting':
         return (
-          <div
-            className='items-center justify-center text-3xl
-            '
-          >
-            Overtime
-          </div>
-        );
-      case '/attendance-overtime/overtime-approval':
-        return (
-          <div className='flex'>
-            <div
-              className='flex items-center justify-center cursor-pointer'
-              onClick={() => navigate(-1)}
-            >
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                stroke-width='1.5'
-                stroke='currentColor'
-                class='w-6 h-6'
-              >
-                <path
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  d='M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18'
-                />
-              </svg>
-            </div>
-            <div
-              className='ml-2 flex items-center justify-center text-3xl
-            '
-            >
-              Overtime Details
-            </div>
-          </div>
-        );
-      case '/attendance-setting':
-        return (
-          <div
-            className='items-center justify-center text-3xl
-            '
-          >
+          <div className='items-center justify-center text-3xl'>
             Attendance Setting
           </div>
         );
+
       default:
         return (
-          <div
-            className='items-center justify-center text-3xl
-            '
-          >
-            Attendance
-          </div>
+          <div className='items-center justify-center text-3xl'>Attendance</div>
         );
     }
   };

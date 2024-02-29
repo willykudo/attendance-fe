@@ -4,7 +4,7 @@ const queryConfig = {
       retry: 1,
       refetchOnWindowFocus: false,
     },
-  }
+  },
 };
 
 export default queryConfig;

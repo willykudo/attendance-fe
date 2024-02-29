@@ -3,71 +3,45 @@ import {
   SearchBox,
   Button,
   DataTable,
-  ColorTag,
 } from '@bluesilodev/timhutcomponents';
 
+import ColorTag from '../../components/ColorTag';
+
+import React, { useState } from 'react';
+import { useAttendanceRequest } from 'store/slices/attendanceRequestSlice';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 const AttendanceApproval = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const dataTable = [
-    {
-      employee_name: 'John Doe',
-      job_position: 'IT',
-      request_date: '25 August 2023',
-      shift: 'Morning Shift',
-      punch_in: {
-        time: '08:00',
-        date: '25 August 2023',
-      },
-      punch_out: {
-        time: '17:00',
-        date: '25 August 2023',
-      },
-      total_hour: '10 Hours',
-      ot_duration: '-',
-      status: 'On Time',
-      approval: 'Approved',
-    },
-    {
-      employee_name: 'John Doe',
-      job_position: 'IT',
-      request_date: '27 September 2023',
-      shift: 'Night Shift',
-      punch_in: {
-        time: '20:00',
-        date: '25 August 2023',
-      },
-      punch_out: {
-        time: '05:00',
-        date: '26 August 2023',
-      },
-      total_hour: '9 Hours',
-      ot_duration: '-',
-      status: 'Late',
-      approval: 'Rejected',
-    },
-    {
-      employee_name: 'John Doe',
-      job_position: 'IT',
-      request_date: '27 September 2023',
-      shift: 'Night Shift',
-      punch_in: {
-        time: '20:00',
-        date: '25 August 2023',
-      },
-      punch_out: {
-        time: '05:00',
-        date: '26 August 2023',
-      },
-      total_hour: '9 Hours',
-      ot_duration: '-',
-      status: 'Late',
-      approval: 'Pending',
-    },
-  ];
+  const [queryParams, setQueryParams] = useState({});
+  const role = useSelector((state) => state.auth.user.role);
+  const { data, error, isLoading } = useAttendanceRequest(queryParams);
+
+  console.log(data);
+
+  let dataLength;
+  if (data && data.data) {
+    dataLength = data.data.length;
+  } else {
+    dataLength = 0;
+  }
+
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+
+    // Ensure inputDate is a valid date
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-GB', options);
+
+    return formattedDate;
+  };
 
   const dataTimeRange = [
     'Today',
@@ -99,7 +73,7 @@ const AttendanceApproval = () => {
             <div className='pl-4 input-select w-[200px] h-[58px]'>
               <InputSelect title={'Departments'} options={dataDepartment} />
             </div>
-            <div className='pl-4 input-select  w-[200px] h-[58px]'>
+            <div className='pl-4 input-select w-[200px] h-[58px]'>
               <InputSelect title={'Approval'} options={dataApproval} />
             </div>
             <div className='ml-auto flex'>
@@ -109,254 +83,247 @@ const AttendanceApproval = () => {
                   className={'h-[58px] w-[250px]'}
                 />
               </div>
-              <div className='my-auto ml-4'>
+              <div className=' ml-4'>
                 <Button
                   label={'Request Attendance'}
-                  className={'w-[220px] h-[58px]'}
+                  className={'w-[220px] h-[2px]'}
                 />
               </div>
             </div>
           </div>
           <div className=' mt-5'>
-            <DataTable
-              title='Attendance Data'
-              columns={[
-                {
-                  id: 'employee_name',
-                  accessorFn: (row) => row.employee_name,
-                  header: () => <span>Employee</span>,
-                  enableSorting: true,
-                },
+            {dataLength > 0 && (
+              <DataTable
+                title='Attendance Data'
+                columns={[
+                  {
+                    id: 'employeeInfo',
+                    accessorFn: (row) => {
+                      return `${row.employeeInfo.data.firstName} ${row.employeeInfo.data.lastName}`;
+                    },
+                    header: () => <span>Employee</span>,
+                    enableSorting: true,
+                  },
+                  {
+                    id: 'jobPosition',
+                    accessorFn: (row) => row.employeeInfo.data.role,
+                    header: () => <span>Job Position</span>,
+                    enableSorting: true,
+                  },
+                  {
+                    id: 'request_date',
+                    accessorFn: (row) => row.createdAt,
+                    header: () => <span>Request Date</span>,
+                    enableSorting: true,
+                    cell: (date) => {
+                      const dateStr = date.getValue();
 
-                {
-                  id: 'job_position',
-                  accessorFn: (row) => row.job_position,
-                  header: () => <span>Job Position</span>,
-                  enableSorting: true,
-                },
-                {
-                  id: 'request_date',
-                  accessorFn: (row) => row.request_date,
-                  header: () => <span>Request Date</span>,
-                  enableSorting: true,
-                },
-                {
-                  id: 'shift',
-                  accessorFn: (row) => row.shift,
-                  header: () => <span>Shift</span>,
-                  enableSorting: true,
-                },
-                {
-                  id: 'punch_in',
-                  accessorFn: (row) =>
-                    `${row.punch_in.time} ${row.punch_in.date}`,
-                  header: () => <span>Punch In</span>,
-                  enableSorting: true,
-                },
-                {
-                  id: 'punch_out',
-                  accessorFn: (row) =>
-                    `${row.punch_out.time} ${row.punch_out.date}`,
-                  header: () => <span>Punch Out</span>,
-                  enableSorting: true,
-                },
-                {
-                  id: 'ot_duration',
-                  accessorFn: (row) => row.ot_duration,
-                  header: () => <span>Overtime Duration</span>,
-                  enableSorting: true,
-                },
-                {
-                  id: 'total_hour',
-                  accessorFn: (row) => row.total_hour,
-                  header: () => <span>Total Hours</span>,
-                  enableSorting: true,
-                },
-                {
-                  id: 'status',
-                  accessorFn: (row) => row.status,
-                  header: () => <span>Status</span>,
-                  enableSorting: false,
-                  cell: (status) => {
-                    const approvalStatus = status.getValue();
+                      return <div> {formatDate(dateStr)}</div>;
+                    },
+                  },
+                  {
+                    id: 'scheduleID',
+                    accessorFn: (row) => row.scheduleID,
+                    header: () => <span>Shift</span>,
+                    enableSorting: true,
+                  },
+                  {
+                    id: 'punchIn',
+                    accessorFn: (row) => row.punchIn,
+                    header: () => <span>Punch In</span>,
+                    cell: (date) => {
+                      const dateStr = date.getValue();
 
-                    if (approvalStatus === 'On Time') {
-                      return (
-                        <>
-                          <div className='font-semibold'>
-                            <ColorTag label={approvalStatus} color='green' />
-                          </div>
-                        </>
-                      );
-                    }
-                    if (approvalStatus === 'Late') {
-                      return (
-                        <>
-                          <div className=' font-semibold'>
-                            <ColorTag label={approvalStatus} color='red' />
-                          </div>
-                        </>
-                      );
-                    }
+                      return <div> {formatDate(dateStr)}</div>;
+                    },
+                    enableSorting: true,
                   },
-                },
-                {
-                  id: 'approval',
-                  header: () => <span>Approval</span>,
-                  accessorFn: (row) => row.approval,
-                  onclick: (row) => {
-                    console.log(row.approval);
-                  },
-                  enableSorting: false,
-                  cell: (status) => {
-                    const approvalStatus = status.getValue();
+                  {
+                    id: 'punchOut',
+                    accessorFn: (row) => row.punchOut,
+                    header: () => <span>Punch Out</span>,
+                    cell: (date) => {
+                      const dateStr = date.getValue();
 
-                    if (approvalStatus === 'Approved') {
-                      return (
-                        <>
-                          <div
-                            className=' font-semibold'
-                            style={{ color: 'white' }}
-                          >
-                            <ColorTag label={approvalStatus} color='green' />
-                          </div>
-                        </>
-                      );
-                    }
-                    if (approvalStatus === 'Rejected') {
-                      return (
-                        <>
-                          <div
-                            className='font-semibold'
-                            style={{ color: 'white' }}
-                          >
-                            <ColorTag label={approvalStatus} color='red' />
-                          </div>
-                        </>
-                      );
-                    }
-                    if (approvalStatus === 'Pending') {
-                      return (
-                        <>
-                          <div
-                            className=' font-semibold text-white cursor-pointer'
-                            onClick={() =>
-                              navigate('/attendance-approval/approval')
-                            }
-                          >
-                            <ColorTag label={approvalStatus} color='gray' />
-                          </div>
-                        </>
-                      );
-                    }
+                      return <div> {formatDate(dateStr)}</div>;
+                    },
+                    enableSorting: true,
                   },
-                },
-                {
-                  id: 'approval_by_supervisor',
-                  header: () => <span>Approval by Supervisor</span>,
-                  accessorFn: (row) => row.approval,
-                  onclick: (row) => {
-                    console.log(row.approval);
+                  {
+                    id: 'ot_duration',
+                    accessorFn: (row) => row.ot_duration,
+                    header: () => <span>Overtime Duration</span>,
+                    enableSorting: true,
+                    cell: (date) => {
+                      return <div className='ml-10  '>-</div>;
+                    },
                   },
-                  enableSorting: false,
-                  cell: (status) => {
-                    const approvalStatus = status.getValue();
+                  {
+                    id: 'total_hour',
+                    accessorFn: (row) => row.total_hour,
+                    header: () => <span>Total Hours</span>,
+                    enableSorting: true,
+                    cell: (date) => {
+                      return <div className='ml-10  '>-</div>;
+                    },
+                  },
+                  {
+                    id: 'status',
+                    accessorFn: (row) => row.approvalStatus,
+                    header: () => <span>Status</span>,
+                    enableSorting: false,
+                    cell: (status) => {
+                      const approvalStatus = status.getValue();
 
-                    if (approvalStatus === 'Approved') {
-                      return (
-                        <>
-                          <div
-                            className=' font-semibold'
-                            style={{ color: 'white' }}
-                          >
-                            <ColorTag label={approvalStatus} color='green' />
-                          </div>
-                        </>
-                      );
-                    }
-                    if (approvalStatus === 'Rejected') {
-                      return (
-                        <>
-                          <div
-                            className='font-semibold'
-                            style={{ color: 'white' }}
-                          >
-                            <ColorTag label={approvalStatus} color='red' />
-                          </div>
-                        </>
-                      );
-                    }
-                    if (approvalStatus === 'Pending') {
-                      return (
-                        <>
-                          <div
-                            className=' font-semibold text-white cursor-pointer'
-                            onClick={() =>
-                              navigate('/attendance-approval/approval')
-                            }
-                          >
-                            <ColorTag label={approvalStatus} color='gray' />
-                          </div>
-                        </>
-                      );
-                    }
+                      if (approvalStatus.isHr.status === 'Pending') {
+                        return (
+                          <>
+                            <div
+                              className='font-semibold'
+                              style={{ color: 'black' }}
+                            >
+                              <ColorTag
+                                label='Pending'
+                                color='gray'
+                                width={'150px'}
+                                height={'30px'}
+                              />
+                            </div>
+                          </>
+                        );
+                      }
+                      if (
+                        approvalStatus.isHr.status &&
+                        approvalStatus.isManager.status === 'Approved'
+                      ) {
+                        return (
+                          <>
+                            <div
+                              className='font-semibold'
+                              style={{ color: 'black' }}
+                            >
+                              <ColorTag label='Approved' color='green' />
+                            </div>
+                          </>
+                        );
+                      }
+                    },
                   },
-                },
-                {
-                  id: 'approval_by_admin',
-                  header: () => <span>Approval by HR Admin</span>,
-                  accessorFn: (row) => row.approval,
-                  onclick: (row) => {
-                    console.log(row.approval);
-                  },
-                  enableSorting: false,
-                  cell: (status) => {
-                    const approvalStatus = status.getValue();
 
-                    if (approvalStatus === 'Approved') {
-                      return (
-                        <>
-                          <div
-                            className=' font-semibold'
-                            style={{ color: 'white' }}
-                          >
-                            <ColorTag label={approvalStatus} color='green' />
-                          </div>
-                        </>
-                      );
-                    }
-                    if (approvalStatus === 'Rejected') {
-                      return (
-                        <>
-                          <div
-                            className='font-semibold'
-                            style={{ color: 'white' }}
-                          >
-                            <ColorTag label={approvalStatus} color='red' />
-                          </div>
-                        </>
-                      );
-                    }
-                    if (approvalStatus === 'Pending') {
-                      return (
-                        <>
-                          <div
-                            className=' font-semibold text-white cursor-pointer'
-                            onClick={() =>
-                              navigate('/attendance-approval/approval')
-                            }
-                          >
-                            <ColorTag label={approvalStatus} color='gray' />
-                          </div>
-                        </>
-                      );
-                    }
+                  {
+                    id: 'approval_by_supervisor',
+                    header: () => <span>Approval by Supervisor</span>,
+                    accessorFn: (row) => row.approvalStatus,
+                    enableSorting: false,
+                    cell: (status) => {
+                      const value = status.getValue();
+                      const approvalStatus = value.isHr.status;
+
+                      if (approvalStatus === 'Pending') {
+                        return (
+                          <>
+                            <div
+                              className=' font-semibold'
+                              style={{ color: 'black' }}
+                            >
+                              <ColorTag
+                                label='Pending'
+                                color='gray'
+                                width={'150px'}
+                                height={'30px'}
+                              />
+                            </div>
+                          </>
+                        );
+                      }
+                      if (approvalStatus === 'Rejected') {
+                        return (
+                          <>
+                            <div
+                              className='font-semibold'
+                              style={{ color: 'black' }}
+                            >
+                              <ColorTag label={approvalStatus} color='red' />
+                            </div>
+                          </>
+                        );
+                      }
+                      if (approvalStatus === 'Approved') {
+                        return (
+                          <>
+                            <div
+                              className=' font-semibold text-white cursor-pointer'
+                              onClick={() =>
+                                navigate('/attendance-approval/approval')
+                              }
+                            >
+                              <ColorTag label={approvalStatus} color='green' />
+                            </div>
+                          </>
+                        );
+                      }
+                    },
                   },
-                },
-              ]}
-              data={dataTable}
-              pagination={true}
-            />
+                  {
+                    id: 'approval_by_admin',
+                    header: () => <span>Approval by HR Admin</span>,
+                    accessorFn: (row) => row.approvalStatus,
+
+                    enableSorting: false,
+                    cell: (status) => {
+                      const value = status.getValue();
+                      const approvalStatus = value.isManager.status;
+
+                      if (approvalStatus === 'Pending') {
+                        return (
+                          <>
+                            <div
+                              className=' font-semibold'
+                              style={{ color: 'black' }}
+                            >
+                              <ColorTag
+                                label='Pending'
+                                color='gray'
+                                width={'150px'}
+                                height={'30px'}
+                              />
+                            </div>
+                          </>
+                        );
+                      }
+                      if (approvalStatus === 'Rejected') {
+                        return (
+                          <>
+                            <div
+                              className='font-semibold'
+                              style={{ color: 'black' }}
+                            >
+                              <ColorTag label={approvalStatus} color='red' />
+                            </div>
+                          </>
+                        );
+                      }
+                      if (approvalStatus === 'Approved') {
+                        return (
+                          <>
+                            <div
+                              className=' font-semibold text-white cursor-pointer'
+                              onClick={() =>
+                                navigate('/attendance-approval/approval')
+                              }
+                            >
+                              <ColorTag label={approvalStatus} color='green' />
+                            </div>
+                          </>
+                        );
+                      }
+                    },
+                  },
+                ]}
+                data={data.data}
+                pagination={true}
+              />
+            )}
           </div>
         </div>
       )}
