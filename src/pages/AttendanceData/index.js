@@ -65,8 +65,8 @@ const AttendanceData = () => {
   };
 
   useEffect(() => {
-    // const email = 'testemploye123@gmail.com';
-    const email = 'user2@gmail.com';
+    const email = 'arielsbs@gmail.com'; //employee
+    // const email = 'user2@gmail.com'; //admin
     const password = '123456';
 
     const performLogin = async () => {
@@ -484,7 +484,7 @@ const AttendanceData = () => {
                   {
                     id: 'employeeInfo',
                     accessorFn: (row) => {
-                      return `${row.employeeInfo.data.firstName} ${row.employeeInfo.data.lastName}`;
+                      return `${row.employeeInfo.firstName} ${row.employeeInfo.lastName}`;
                     },
                     header: () => <span>Employee</span>,
                     enableSorting: true,
@@ -497,7 +497,7 @@ const AttendanceData = () => {
                   },
                   {
                     id: 'jobPosition',
-                    accessorFn: (row) => row.employeeInfo.data.role,
+                    accessorFn: (row) => row.employeeInfo.role,
                     header: () => <span>Job Position</span>,
                     enableSorting: true,
                   },
@@ -548,9 +548,7 @@ const AttendanceData = () => {
                       const { uId, status: recordStatus } = status.getValue();
 
                       const handleClick = () => {
-                        if (role === 'admin') {
-                          navigate(`/attendance-data/${uId}`);
-                        }
+                        navigate(`/attendance-data/${uId}`);
                       };
 
                       let color = '';
@@ -563,9 +561,7 @@ const AttendanceData = () => {
                       return (
                         <>
                           <div
-                            className={`${
-                              role === 'admin' ? 'cursor-pointer' : ''
-                            }`}
+                            className='flex justify-center items-center cursor-pointer'
                             onClick={handleClick}
                           >
                             <ColorTag

@@ -45,7 +45,7 @@ export const useAttendanceData = (queryParams) => {
     () => fetchAttendanceData(token, queryParams),
     {
       refetchOnWindowFocus: true,
-      staleTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 2,
     }
   );
 

@@ -4,9 +4,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AttendanceData from 'pages/AttendanceData';
 import AttendanceSetting from 'pages/AttendanceSetting';
 import AttendanceOvertime from 'pages/AttendanceOvertime';
-import AttendanceApproval from 'pages/AttendanceApproval';
+import AttendanceApproval from 'pages/AttendanceRequest';
 import Layout from 'layout/index';
-import ApprovalPage from 'pages/AttendanceApproval/approvalPage';
+import ApprovalPage from 'pages/AttendanceRequest/approvalPage';
 import OvertimeApproval from 'pages/AttendanceOvertime/overtimeApproval';
 import EditAttendance from 'pages/AttendanceData/editAttendancePage';
 

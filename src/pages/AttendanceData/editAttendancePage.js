@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAttendanceData } from 'store/slices/attendanceDataSlice';
+import { convertDateTimeToArray } from 'utils/common';
 import { useSelector } from 'react-redux';
 import { selectRecordByUId } from 'store/slices/attendanceDataSlice';
 
@@ -84,7 +85,7 @@ const EditAttendance = () => {
                 }}
               >
                 <img
-                  src={employeeDetails.employeeInfo.data.photo}
+                  src={employeeDetails.employeeInfo.photo}
                   alt='Employee Photo'
                   style={{
                     width: '100%',
@@ -120,7 +121,7 @@ const EditAttendance = () => {
                       label={'First Name'}
                       classname={'h-[58px]'}
                       disable={true}
-                      value={employeeDetails.employeeInfo.data.firstName}
+                      value={employeeDetails.employeeInfo.firstName}
                     />
                   </div>
                   <div className='col-span-1'>
@@ -128,7 +129,7 @@ const EditAttendance = () => {
                       label={'Halim'}
                       classname={'h-[58px]'}
                       disable={true}
-                      value={employeeDetails.employeeInfo.data.lastName}
+                      value={employeeDetails.employeeInfo.lastName}
                     />
                   </div>
                   <div className='col-span-1'>
@@ -162,7 +163,7 @@ const EditAttendance = () => {
                       label={'Job Position'}
                       classname={'h-[58px]'}
                       disable={true}
-                      value={employeeDetails.employeeInfo.data.jobLevel}
+                      value={employeeDetails.employeeInfo.jobLevel}
                     />
                   </div>
                 </div>
@@ -190,7 +191,7 @@ const EditAttendance = () => {
                     <InputTime
                       label={'Punch in Time'}
                       required={required}
-                      value={formatTime(employeeDetails.punchOut)}
+                      value={convertDateTimeToArray(employeeDetails.punchOut)}
                       disable={activeInput}
                     />
                   </div>
@@ -248,7 +249,7 @@ const EditAttendance = () => {
                       label={'Punch Out Time'}
                       required={required}
                       disable={activeInput}
-                      value={formatTime(employeeDetails.punchOut)}
+                      value={convertDateTimeToArray(employeeDetails.punchOut)}
                     />
                   </div>
 
@@ -305,7 +306,7 @@ const EditAttendance = () => {
                       <InputTime
                         label={'Break Time'}
                         required={required}
-                        value={formatTime(breakItem.breakTime)}
+                        value={convertDateTimeToArray(breakItem.breakTime)}
                         disable={activeInput}
                       />
                     </div>
@@ -363,7 +364,9 @@ const EditAttendance = () => {
                     <div className='col-span-1 mr-6'>
                       <InputTime
                         label={'Resume Time'}
-                        value={formatTime(breakItem.returnFromBreak)}
+                        value={convertDateTimeToArray(
+                          breakItem.returnFromBreak
+                        )}
                         required={required}
                         disable={activeInput}
                       />

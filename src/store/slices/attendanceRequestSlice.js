@@ -30,17 +30,14 @@ const attendanceRequestSlice = createSlice({
 
 export const useAttendanceRequest = (queryParams) => {
   const token = useSelector((state) => state.auth.token);
-  console.log(token);
   const dispatch = useDispatch();
-
-  console.log(queryParams);
 
   const { data, error, isLoading } = useQuery(
     ['attendanceRequest', queryParams],
     () => fetchAttendanceRequest(token, queryParams),
     {
       refetchOnWindowFocus: true,
-      staleTime: 1000 * 60 * 10,
+      staleTime: 1000 * 60 * 2,
     }
   );
 
