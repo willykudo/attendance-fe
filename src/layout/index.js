@@ -1,11 +1,13 @@
 import React from 'react';
-import { Outlet, useNavigate, useLocation, NavLink } from 'react-router-dom';
-
+import {
+  Outlet,
+  useNavigate,
+  useLocation,
+  NavLink
+} from 'react-router-dom';
 import { Sidebar, Header } from '@bluesilodev/timhutcomponents';
-
 import UserSVG from 'assets/icon/UserSVG/UserSVG';
 import FiHeartSVG from 'assets/icon/FiHeartSVG/FiHeartSVG';
-
 import Profile from '../../src/assets/images/profile.jpeg';
 
 const Layout = () => {
@@ -17,17 +19,15 @@ const Layout = () => {
       label: (
         <NavLink
           to={'/attendance-data'}
-          className={`${
-            location.pathname.startsWith('/attendance-data') &&
+          className={`${location.pathname.startsWith('/attendance-data') &&
             'bg-orange-500 text-white'
-          } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
+            } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
         >
           <UserSVG
-            color={`${
-              location.pathname.startsWith('/attendance-data')
-                ? 'white'
-                : 'black'
-            }`}
+            color={`${location.pathname.startsWith('/attendance-data')
+              ? 'white'
+              : 'black'
+              }`}
           />
           <h1>Attendance Data</h1>
         </NavLink>
@@ -37,21 +37,19 @@ const Layout = () => {
       label: (
         <NavLink
           to={'/attendance-approval'}
-          className={`${
-            location.pathname.startsWith('/attendance-approval') &&
+          className={`${location.pathname.startsWith('/attendance-approval') &&
             'bg-orange-500 text-white'
-          } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
+            } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
           isActive={(match, location) => {
             return location.pathname.startsWith(match.url);
           }}
         >
           <FiHeartSVG
-            color={`${
-              location.pathname === '/attendance-approval' ||
+            color={`${location.pathname === '/attendance-approval' ||
               location.pathname === '/attendance-approval/approval'
-                ? 'white'
-                : 'black'
-            }`}
+              ? 'white'
+              : 'black'
+              }`}
           />
           <h1>Attendance Approval</h1>
         </NavLink>
@@ -61,21 +59,19 @@ const Layout = () => {
       label: (
         <NavLink
           to={'/attendance-overtime'}
-          className={`${
-            location.pathname.startsWith('/attendance-overtime') &&
+          className={`${location.pathname.startsWith('/attendance-overtime') &&
             'bg-orange-500 text-white'
-          } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
+            } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
           isActive={(match, location) => {
             return location.pathname.startsWith(match.url);
           }}
         >
           <FiHeartSVG
-            color={`${
-              location.pathname === '/attendance-overtime' ||
+            color={`${location.pathname === '/attendance-overtime' ||
               location.pathname === '/attendance-overtime/overtime-approval'
-                ? 'white'
-                : 'black'
-            }`}
+              ? 'white'
+              : 'black'
+              }`}
           />
           <h1>Attendance Overtime</h1>
         </NavLink>
@@ -85,15 +81,13 @@ const Layout = () => {
       label: (
         <NavLink
           to={'/attendance-setting'}
-          className={`${
-            location.pathname === '/attendance-setting' &&
+          className={`${location.pathname === '/attendance-setting' &&
             'bg-orange-500 text-white'
-          } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
+            } flex gap-1 rounded-md p-3 w-full items-center hover:scale-x-105 hover:cursor-pointer transition-all duration-300`}
         >
           <FiHeartSVG
-            color={`${
-              location.pathname === '/attendance-setting' ? 'white' : 'black'
-            }`}
+            color={`${location.pathname === '/attendance-setting' ? 'white' : 'black'
+              }`}
           />
           <h1>Attendance Setting</h1>
         </NavLink>

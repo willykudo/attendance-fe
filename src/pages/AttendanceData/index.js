@@ -25,7 +25,7 @@ const AttendanceData = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [queryParams, setQueryParams] = useState({});
-  const role = useSelector((state) => state.auth.user.role);
+  const role = useSelector((state) => state.auth?.user?.role);
 
   const { data, error, isLoading } = useAttendanceData(queryParams);
 
@@ -64,9 +64,23 @@ const AttendanceData = () => {
     }));
   };
 
+  const filterDataByRole = (params, role) => {
+    if (role === 'admin' || role === 'supervisor' || role === 'employee') {
+      return { ...params, role: role };
+    } else {
+      console.error('Role tidak valid');
+      return params;
+    }
+  };
+
   useEffect(() => {
-    const email = 'arielsbs@gmail.com'; //employee
-    // const email = 'user2@gmail.com'; //admin
+    setQueryParams(filterDataByRole({ role })); // Initialize query params based on role
+  }, [role]);
+
+  useEffect(() => {
+    // const email = 'alvin@gmail.com'; //employee
+    const email = 'tony@gmail.com'; //supervisor 
+    // const email = 'willy@gmail.com'; //admin
     const password = '123456';
 
     const performLogin = async () => {
@@ -102,9 +116,9 @@ const AttendanceData = () => {
     'Custom Date',
   ];
 
-  const dataLocation = ['Cafe Halim', 'Kedai Kebab', 'Kedai Kopi'];
+  const dataLocation = ['Cafe Halim #2', 'Cafe Willy'];
 
-  const dataDepartment = ['All Department', 'QA', 'Kedai Kebab'];
+  const dataDepartment = ['QA', 'IT'];
 
   const label = <span className='text-gray-500 text-xs'>notes</span>;
 
@@ -213,6 +227,9 @@ const AttendanceData = () => {
                 title={'Time Range'}
                 options={dataTimeRange}
                 classname={' h-[58px]'}
+              // onChange={(event) =>
+              //   handleTimeRangeChange(event.target.value)
+              // }
               />
             </div>
             <div className='pl-4 input-select w-[250px]'>
@@ -238,7 +255,7 @@ const AttendanceData = () => {
             <div className='ml-auto flex'>
               <div>
                 <SearchBox
-                  onChange={() => {}}
+                  onChange={() => { }}
                   className={'h-[58px] w-[250px]'}
                 />
               </div>
@@ -247,7 +264,7 @@ const AttendanceData = () => {
                 {role === 'admin' ? (
                   <Button
                     label={'Export'}
-                    onClick={() => {}}
+                    onClick={() => { }}
                     className={'w-[220px] h-[58px]'}
                   />
                 ) : (
@@ -266,7 +283,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => {}}
+                onClick={() => { }}
                 radius='lg'
                 width='230px'
               >
@@ -299,7 +316,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => {}}
+                onClick={() => { }}
                 radius='lg'
                 width='230px'
               >
@@ -334,7 +351,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => {}}
+                onClick={() => { }}
                 radius='lg'
                 width='230px'
               >
@@ -369,7 +386,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => {}}
+                onClick={() => { }}
                 radius='lg'
                 width='230px'
               >
@@ -406,7 +423,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => {}}
+                onClick={() => { }}
                 radius='lg'
                 width='230px'
               >
@@ -441,7 +458,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => {}}
+                onClick={() => { }}
                 radius='lg'
                 width='230px'
               >

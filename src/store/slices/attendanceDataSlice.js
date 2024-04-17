@@ -2,7 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 import { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { fetchAttendanceData } from 'services/fetchAttendanceData';
+
 
 const attendanceDataSlice = createSlice({
   name: 'attendanceData',

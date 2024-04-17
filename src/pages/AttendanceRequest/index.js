@@ -301,7 +301,7 @@ const AttendanceApproval = () => {
             <div className='ml-auto flex'>
               <div>
                 <SearchBox
-                  onChange={() => {}}
+                  onChange={() => { }}
                   className={'h-[58px] w-[250px]'}
                 />
               </div>
