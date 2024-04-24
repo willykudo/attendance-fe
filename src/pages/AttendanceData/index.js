@@ -78,9 +78,9 @@ const AttendanceData = () => {
   }, [role]);
 
   useEffect(() => {
-    // const email = 'alvin@gmail.com'; //employee
-    const email = 'tony@gmail.com'; //supervisor 
-    // const email = 'willy@gmail.com'; //admin
+    // const email = 'dion@gmail.com'; //employee
+    // const email = 'tony@gmail.com'; //supervisor 
+    const email = 'willy@gmail.com'; //admin
     const password = '123456';
 
     const performLogin = async () => {
@@ -107,6 +107,51 @@ const AttendanceData = () => {
   const handleModalSubmit = () => {
     handleCloseModal();
   };
+
+  const [summary, setSummary] = useState({
+    ontime: 0,
+    late: 0,
+    absence: 0,
+    onleave: 0,
+    nopunchinout: 0,
+    overtime: 0
+  });
+
+  useEffect(() => {
+    if (data && data.data) {
+      const newSummary = data.data.reduce((acc, record) => {
+        const status = record.status.toLowerCase().replace(/\s/g, ''); // Normalisasi teks status
+
+        acc[status]++; // Langsung tambahkan jumlah status ke accumulator
+
+        return acc;
+      }, { ontime: 0, late: 0, absence: 0, onleave: 0, nopunchinout: 0, overtime: 0 });
+
+      setSummary(newSummary);
+    }
+  }, [data]);
+
+  const handleClick = (dataType) => {
+    let newQueryParams = { ...queryParams };
+
+
+    switch (dataType) {
+      case 'ontime':
+        newQueryParams.status = 'OnTime';
+        break;
+      case 'late':
+        newQueryParams.status = 'Late';
+        break;
+      case 'nopunchinout':
+        newQueryParams.status = 'NoPunchInOut';
+        break;
+      default:
+        break;
+    }
+    console.log(newQueryParams.status);
+    setQueryParams(newQueryParams);
+  };
+
 
   const dataTimeRange = [
     'Today',
@@ -283,7 +328,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => { }}
+                onClick={() => handleClick('ontime')}
                 radius='lg'
                 width='230px'
               >
@@ -308,7 +353,7 @@ const AttendanceData = () => {
                     <p class='input-label'>
                       {role === 'user' ? 'On Time Records' : 'Employee On Time'}
                     </p>
-                    <p className='text-lg font-semibold'>1 Times</p>
+                    <p className='text-lg font-semibold'>{summary.ontime} Employee</p>
                   </div>
                 </div>
               </WidgetCard>
@@ -316,7 +361,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => { }}
+                onClick={() => handleClick('late')}
                 radius='lg'
                 width='230px'
               >
@@ -342,7 +387,7 @@ const AttendanceData = () => {
                       {role === 'user' ? 'Late Records' : 'Employee Late'}
                     </p>
                     <p className='text-lg font-semibold'>
-                      {role === 'user' ? '1 Times' : '1 Employees'}
+                      {summary.late} Employee
                     </p>
                   </div>
                 </div>
@@ -377,7 +422,7 @@ const AttendanceData = () => {
                       {role === 'user' ? 'Absence Records' : 'Employee Absence'}
                     </p>
                     <p className='text-lg font-semibold'>
-                      {role === 'user' ? '1 Times' : '1 Employees'}
+                      {summary.absence} Employee
                     </p>
                   </div>
                 </div>
@@ -386,7 +431,7 @@ const AttendanceData = () => {
             <div className=' flex items-center justify-center'>
               <WidgetCard
                 height='130px'
-                onClick={() => { }}
+                onClick={() => handleClick('nopunchinout')}
                 radius='lg'
                 width='230px'
               >
@@ -414,7 +459,7 @@ const AttendanceData = () => {
                         : 'No Punch In/Out'}
                     </p>
                     <p className='text-lg font-semibold'>
-                      {role === 'user' ? '1 Times' : '1 Employees'}
+                      {summary.nopunchinout} Employee
                     </p>
                   </div>
                 </div>
@@ -449,7 +494,7 @@ const AttendanceData = () => {
                       {role === 'user' ? 'Leave Records' : 'Employee On Leave'}
                     </p>
                     <p className='text-lg font-semibold'>
-                      {role === 'user' ? '1 Times' : '1 Employees'}
+                      {summary.onleave} Employee
                     </p>
                   </div>
                 </div>
@@ -486,7 +531,7 @@ const AttendanceData = () => {
                         : 'Employee Overtime'}
                     </p>
                     <p className='text-lg font-semibold'>
-                      {role === 'user' ? '1 Times' : '1 Employee'}
+                      {summary.overtime} Employee
                     </p>
                   </div>
                 </div>
@@ -569,10 +614,12 @@ const AttendanceData = () => {
                       };
 
                       let color = '';
-                      if (recordStatus === 'On Time') {
+                      if (recordStatus === 'OnTime') {
                         color = 'green';
                       } else if (recordStatus === 'Late') {
                         color = 'red';
+                      } else if (recordStatus === 'NoPunchInOut') {
+                        color = 'blue'
                       }
 
                       return (
