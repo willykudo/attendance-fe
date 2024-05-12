@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAttendanceData } from 'store/slices/attendanceDataSlice';
+import { updateAttendanceData } from 'services/fetchAttendanceData';
+import { createRequestAttendance } from 'services/attendanceRequestService';
+import { login } from 'services/authApi';
+import { loginSuccess } from 'store/slices/authSlice';
 import { convertDateTimeToArray } from 'utils/common';
-import { useSelector } from 'react-redux';
-import { selectRecordByUId } from 'store/slices/attendanceDataSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectRecordByUId, updateEmployeeDetails } from 'store/slices/attendanceDataSlice';
 
 import {
   Button,
@@ -14,38 +18,95 @@ import {
 } from '@bluesilodev/timhutcomponents';
 
 const EditAttendance = () => {
+  const dispatch = useDispatch();
   const { uId } = useParams();
   const [buttonLabel, setButtonLabel] = useState('Edit Attendance');
-  const [activeInput, setActiveInput] = useState(true);
-  const [required, setRequired] = useState(false);
-  const employeeDetails = useSelector(selectRecordByUId(uId));
+  const [activeInput, setActiveInput] = useState(false);
+  const [required, setRequired] = useState(true);
+  const [updatedData, setUpdatedData] = useState({});
 
-  const handleButtonClick = () => {
-    setButtonLabel(
-      buttonLabel === 'Edit Attendance' ? 'Request Changes' : 'Edit Attendance'
-    );
+  const employeeDetails = useSelector((state) => selectRecordByUId(uId)(state));
+  const role = useSelector((state) => state.auth?.user?.role[0]);
+  const token = useSelector((state) => state.auth.token);
+
+  const handleButtonClick = async () => {
     setActiveInput(!activeInput);
-    setRequired(!required);
+
+    if (role === 'admin' || role === 'supervisor') {
+      try {
+        setButtonLabel(buttonLabel === 'Edit Attendance' ? 'Save' : 'Edit Attendance');
+
+        // Logging updatedData before sending to backend
+        console.log("Updated data:", updatedData);
+
+        // Memperbarui employeeDetails dengan data yang diperbarui
+        const updatedEmployeeDetails = updateNestedData(employeeDetails, updatedData);
+
+        // Logging updated employeeDetails
+        console.log("Updated employeeDetails:", updatedEmployeeDetails);
+
+        // Mengirimkan data yang diperbarui ke backend
+        await updateAttendanceData(token, uId, updatedEmployeeDetails)
+          .then(response => {
+            console.log("Server response:", response);
+          });
+
+        // Memanggil action creator untuk memperbarui data karyawan di Redux store
+        dispatch(updateEmployeeDetails({ uId, updatedDetails: updatedEmployeeDetails }));
+
+      } catch (error) {
+        console.error('Error while updating admin or supervisor data:', error);
+      }
+    } else if (role === 'employee') {
+      try {
+
+        setButtonLabel(buttonLabel === 'Edit Attendance' ? 'Request Changes' : 'Edit Attendance');
+
+        console.log("Updated data:", updatedData);
+
+        const response = await createRequestAttendance(token, updatedData);
+
+        console.log('Attendance change request created successfully:', response);
+
+      } catch (error) {
+
+        console.error('Error creating attendance change request:', error);
+
+      }
+    }
   };
+
+  useEffect(() => {
+    // const email = 'dion@gmail.com'; //employee
+    // const email = 'tony@gmail.com'; //supervisor 
+    const email = 'willy@gmail.com'; //admin
+    const password = '123456';
+
+    const performLogin = async () => {
+      try {
+        const token = await login(email, password);
+        dispatch(loginSuccess(token));
+      } catch (error) {
+        console.error('Login failed:', error);
+      }
+    };
+
+    performLogin();
+  }, [dispatch]);
 
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
-
-    // Ensure inputDate is a valid date
     if (isNaN(date.getTime())) {
       return 'Invalid Date';
     }
-
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
-
     return `${day}/${month}/${year}`;
   };
 
   const formatTime = (dateString) => {
     const date = new Date(dateString);
-
     return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
@@ -53,7 +114,26 @@ const EditAttendance = () => {
     });
   };
 
-  console.log(formatTime('2024-02-28T14:09:32.330Z'));
+  // Fungsi untuk memperbarui data secara rekursif
+  const updateNestedData = (originalData, newData) => {
+    const updatedData = { ...originalData };
+    for (const prop in newData) {
+      if (newData.hasOwnProperty(prop)) {
+        if (typeof newData[prop] === 'object' && !Array.isArray(newData[prop])) {
+          updatedData[prop] = updateNestedData(originalData[prop], newData[prop]);
+        } else {
+          updatedData[prop] = newData[prop];
+        }
+      }
+    }
+    return updatedData;
+  };
+
+  // Fungsi untuk menangani perubahan input
+  const handleInputChange = (e, key) => {
+    console.log("Input changed:", e.target.value);
+    setUpdatedData({ ...updatedData, [key]: e.target.value });
+  };
 
   return (
     <>
@@ -126,7 +206,7 @@ const EditAttendance = () => {
                   </div>
                   <div className='col-span-1'>
                     <InputText
-                      label={'Halim'}
+                      label={'Last Name'}
                       classname={'h-[58px]'}
                       disable={true}
                       value={employeeDetails.employeeInfo.lastName}
@@ -184,31 +264,42 @@ const EditAttendance = () => {
                       classname={' h-[58px]'}
                       required={required}
                       value={formatDate(employeeDetails.punchIn)}
-                      disable={activeInput}
+                      disable={!activeInput}
+                      onChange={(e) => {
+                        handleInputChange(e, 'punchIn');
+                      }}
                     />
                   </div>
                   <div className='col-span-1 mr-6'>
                     <InputTime
                       label={'Punch in Time'}
                       required={required}
-                      value={convertDateTimeToArray(employeeDetails.punchOut)}
-                      disable={activeInput}
+                      value={convertDateTimeToArray(employeeDetails.punchIn)}
+                      disable={!activeInput}
+                      onChange={(e) => {
+                        handleInputChange(e, 'punchIn');
+                      }}
                     />
                   </div>
                   <div className='col-span-2 mr-6'>
                     <InputText
                       label={'GPS Tracking'}
                       classname={'h-[58px]'}
-                      placeholder={employeeDetails.punchInGps.address}
-                      disable={activeInput}
+                      disable={!activeInput}
+                      placeholder={updatedData.punchInGps ? updatedData.punchInGps : employeeDetails.punchInGps}
+                      // value={employeeDetails.punchInGps}
+                      onChange={(e) => {
+                        handleInputChange(e, 'punchInGps');
+                      }}
                     />
                   </div>
                   <div className='col-span-2 mr-6'>
                     <InputText
                       classname={'h-[58px]'}
                       label={'Description'}
-                      placeholder={employeeDetails.punchInDesc}
-                      disable={activeInput}
+                      placeholder={updatedData.punchInDesc ? updatedData.punchInDes : employeeDetails.punchInDesc}
+                      disable={!activeInput}
+                      onChange={(e) => handleInputChange(e, 'punchInDesc')}
                     />
                   </div>
                 </div>
@@ -238,9 +329,9 @@ const EditAttendance = () => {
                     <InputDate
                       label={'Punch Out Date'}
                       classname={' h-[58px]'}
-                      placeholder={'Punch In'}
+                      // placeholder={'Punch In'}
                       required={required}
-                      disable={activeInput}
+                      disable={!activeInput}
                       value={formatDate(employeeDetails.punchOut)}
                     />
                   </div>
@@ -248,7 +339,7 @@ const EditAttendance = () => {
                     <InputTime
                       label={'Punch Out Time'}
                       required={required}
-                      disable={activeInput}
+                      disable={!activeInput}
                       value={convertDateTimeToArray(employeeDetails.punchOut)}
                     />
                   </div>
@@ -257,16 +348,18 @@ const EditAttendance = () => {
                     <InputText
                       label={'GPS Tracking'}
                       classname={'h-[58px]'}
-                      disable={activeInput}
-                      placeholder={employeeDetails.punchOutGps.address}
+                      disable={!activeInput}
+                      placeholder={updatedData.punchOutGps ? updatedData.punchOutGps : employeeDetails.punchOutGps}
+                      onChange={(e) => handleInputChange(e, 'punchOutGps')}
                     />
                   </div>
                   <div className='col-span-2 mr-6'>
                     <InputText
                       classname={'h-[58px]'}
                       label={'Description'}
-                      placeholder={employeeDetails.punchOutDesc}
-                      disable={activeInput}
+                      placeholder={updatedData.punchOutDesc ? updatedData.punchOutDesc : employeeDetails.punchOutDesc}
+                      disable={!activeInput}
+                      onChange={(e) => handleInputChange(e, 'punchOutDesc')}
                     />
                   </div>
                 </div>
@@ -296,10 +389,10 @@ const EditAttendance = () => {
                       <InputDate
                         label={'Break Date'}
                         classname={' h-[58px]'}
-                        placeholder={'Punch In'}
+                        // placeholder={'Punch In'}
                         required={required}
                         value={formatDate(breakItem.breakTime)}
-                        disable={activeInput}
+                        disable={!activeInput}
                       />
                     </div>
                     <div className='col-span-1 mr-6'>
@@ -307,7 +400,7 @@ const EditAttendance = () => {
                         label={'Break Time'}
                         required={required}
                         value={convertDateTimeToArray(breakItem.breakTime)}
-                        disable={activeInput}
+                        disable={!activeInput}
                       />
                     </div>
 
@@ -315,16 +408,18 @@ const EditAttendance = () => {
                       <InputText
                         label={'GPS Tracking'}
                         classname={'h-[58px]'}
-                        disable={activeInput}
-                        placeholder={breakItem.breakDesc}
+                        disable={!activeInput}
+                        placeholder={breakItem.breakGps}
+                        onChange={(e) => handleInputChange(e, 'breakGps')}
                       />
                     </div>
                     <div className='col-span-2 mr-6 h-[100px]'>
                       <InputText
                         label={'Description'}
                         classname={'h-[100px]'}
-                        disable={activeInput}
+                        disable={!activeInput}
                         placeholder={breakItem.breakDesc}
+                        onChange={(e) => handleInputChange(e, 'breakDesc')}
                       />
                     </div>
                   </div>
@@ -355,9 +450,9 @@ const EditAttendance = () => {
                       <InputDate
                         label={'Resume Date'}
                         classname={' h-[58px]'}
-                        placeholder={'Punch In'}
+                        // placeholder={'Punch In'}
                         value={formatDate(breakItem.returnFromBreak)}
-                        disable={activeInput}
+                        disable={!activeInput}
                         required={required}
                       />
                     </div>
@@ -368,7 +463,7 @@ const EditAttendance = () => {
                           breakItem.returnFromBreak
                         )}
                         required={required}
-                        disable={activeInput}
+                        disable={!activeInput}
                       />
                     </div>
 
@@ -376,16 +471,18 @@ const EditAttendance = () => {
                       <InputText
                         label={'GPS Tracking'}
                         classname={'h-[58px]'}
-                        disable={activeInput}
-                        placeholder={breakItem.returnDesc}
+                        disable={!activeInput}
+                        placeholder={breakItem.returnGps}
+                        onChange={(e) => handleInputChange(e, 'resumeGps')}
                       />
                     </div>
                     <div className='col-span-2 mr-6'>
                       <InputText
                         label={'Description'}
                         classname={'h-[58px]'}
-                        disable={activeInput}
+                        disable={!activeInput}
                         placeholder={breakItem.returnDesc}
+                        onChange={(e) => handleInputChange(e, 'resumeDesc')}
                       />
                     </div>
                   </div>

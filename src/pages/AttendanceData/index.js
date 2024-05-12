@@ -78,9 +78,9 @@ const AttendanceData = () => {
   }, [role]);
 
   useEffect(() => {
-    // const email = 'dion@gmail.com'; //employee
+    const email = 'dion@gmail.com'; //employee
     // const email = 'tony@gmail.com'; //supervisor 
-    const email = 'willy@gmail.com'; //admin
+    // const email = 'willy@gmail.com'; //admin
     const password = '123456';
 
     const performLogin = async () => {

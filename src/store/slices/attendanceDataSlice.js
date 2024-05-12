@@ -26,6 +26,15 @@ const attendanceDataSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    updateEmployeeDetails: (state, action) => {
+      const { uId, updatedDetails } = action.payload;
+      if (state.data.attendances) {
+        const recordIndex = state.data.attendances.findIndex(record => record.uId === uId);
+        if (recordIndex !== -1) {
+          state.data.attendances[recordIndex].employeeDetails = updatedDetails;
+        }
+      }
+    }
   },
 });
 
@@ -42,6 +51,7 @@ export const useAttendanceData = (queryParams) => {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
+  // console.log(token);
   const { data, error, isLoading } = useQuery(
     ['attendanceData', queryParams], // Pass queryParams as part of the key
     () => fetchAttendanceData(token, queryParams),
@@ -72,4 +82,6 @@ export const useAttendanceData = (queryParams) => {
   return { data: initialData, error, isLoading };
 };
 
-export default attendanceDataSlice.reducer;
+export const { startLoading, fetchSuccess, fetchError, updateEmployeeDetails } = attendanceDataSlice.actions;
+
+export default attendanceDataSlice.reducer;    
