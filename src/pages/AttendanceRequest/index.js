@@ -13,10 +13,12 @@ import ColorTag from '../../components/ColorTag';
 import InputDate from '../../components/InputDate';
 // import InputTime from '../../components/InputTime';
 
+import { login } from 'services/authApi';
+import { loginSuccess } from 'store/slices/authSlice';
 import React, { useState, useEffect } from 'react';
 import { useAttendanceRequest } from 'store/slices/attendanceRequestSlice';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useAttendanceData } from 'store/slices/attendanceDataSlice';
 import { convertDateTimeToArray } from 'utils/common';
 import { useFormik } from 'formik';
@@ -24,6 +26,8 @@ import { useFormik } from 'formik';
 const AttendanceApproval = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [scheduleIDs, setScheduleIDs] = useState([]);
   const [locations, setLocations] = useState([]);
@@ -43,9 +47,42 @@ const AttendanceApproval = () => {
     punchOut: false,
   });
 
+  const role = useSelector((state) => state.auth?.user?.role);
   const userData = useSelector((state) => state.auth.user);
   const { data } = useAttendanceRequest(queryParamsRequest);
   const { data: attendanceData } = useAttendanceData(queryParamsData);
+
+  const filterDataByRole = (params, role) => {
+    if (role === 'admin' || role === 'supervisor' || role === 'employee') {
+      return { ...params, role: role };
+    } else {
+      console.error('Role tidak valid');
+      return params;
+    }
+  };
+
+  useEffect(() => {
+    setQueryParamsData(filterDataByRole({ role })); // Initialize query params based on role
+  }, [role]);
+
+  useEffect(() => {
+    const email = 'dion@gmail.com'; //employee
+    // const email = 'tony@gmail.com'; //supervisor 
+    // const email = 'willy@gmail.com'; //admin
+    const password = '123456';
+
+    const performLogin = async () => {
+      try {
+        const token = await login(email, password);
+
+        dispatch(loginSuccess(token));
+      } catch (error) {
+        console.error('Login failed:', error);
+      }
+    };
+
+    performLogin();
+  }, [dispatch]);
 
   const onSubmit = (values) => {
     alert(JSON.stringify(values));
@@ -490,12 +527,23 @@ const AttendanceApproval = () => {
                   {
                     id: 'approval_by_admin',
                     header: () => <span>Approval by HR Admin</span>,
-                    accessorFn: (row) => row.approvalStatus,
+                    accessorFn: (row) => ({
+                      // console.log(row); // Cetak isi row di sini
+                      uId: row.uId,
+                      approvalStatus: row.approvalStatus.isManager.status
+                    }),
 
                     enableSorting: false,
                     cell: (status) => {
-                      const value = status.getValue();
-                      const approvalStatus = value.isManager.status;
+
+                      const { uId, approvalStatus } = status.getValue();
+                      // const approvalStatus = uId.isManager.status;
+
+                      // console.log(uId)
+
+                      const handleClick = () => {
+                        navigate(`/attendance-approval/${uId}`)
+                      };
 
                       if (approvalStatus === 'Pending') {
                         return (
@@ -503,6 +551,7 @@ const AttendanceApproval = () => {
                             <div
                               className=' font-semibold'
                               style={{ color: 'black' }}
+                              onClick={handleClick}
                             >
                               <ColorTag
                                 label='Pending'
@@ -520,6 +569,7 @@ const AttendanceApproval = () => {
                             <div
                               className='font-semibold'
                               style={{ color: 'black' }}
+                              onClick={handleClick}
                             >
                               <ColorTag label={approvalStatus} color='red' />
                             </div>
@@ -531,9 +581,7 @@ const AttendanceApproval = () => {
                           <>
                             <div
                               className=' font-semibold text-white cursor-pointer'
-                              onClick={() =>
-                                navigate('/attendance-approval/approval')
-                              }
+                              onClick={handleClick}
                             >
                               <ColorTag label={approvalStatus} color='green' />
                             </div>

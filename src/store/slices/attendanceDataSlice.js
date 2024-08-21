@@ -42,6 +42,9 @@ export const selectAllData = (state) => state.attendanceData.data.data;
 
 export const selectRecordByUId = (uId) => (state) => {
   const allData = selectAllData(state);
+
+  console.log(uId)
+  console.log(allData)
   return Array.isArray(allData)
     ? allData.find((record) => record.uId === uId)
     : null;

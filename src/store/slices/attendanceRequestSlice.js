@@ -28,6 +28,19 @@ const attendanceRequestSlice = createSlice({
   },
 });
 
+export const selectAllAttendanceRequests = (state) => state.attendanceRequest.data.data;
+
+
+export const selectAttendanceRequestByUId = (uId) => (state) => {
+  const allData = selectAllAttendanceRequests(state);
+
+  console.log(uId)
+  console.log(allData)
+  return Array.isArray(allData)
+    ? allData.find((record) => record.uId === uId)
+    : null;
+};
+
 export const useAttendanceRequest = (queryParams) => {
   const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();

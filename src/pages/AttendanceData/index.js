@@ -26,6 +26,7 @@ const AttendanceData = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [queryParams, setQueryParams] = useState({});
   const role = useSelector((state) => state.auth?.user?.role);
+  // console.log(role)
 
   const { data, error, isLoading } = useAttendanceData(queryParams);
 
@@ -36,6 +37,8 @@ const AttendanceData = () => {
   } else {
     dataLength = 0;
   }
+
+  // console.log(data.data)
 
   // Calculated Total Hours
   const calculateTotalHours = (punchIn, punchOut) => {
@@ -546,7 +549,7 @@ const AttendanceData = () => {
                   {
                     id: 'employeeInfo',
                     accessorFn: (row) => {
-                      return `${row.employeeInfo.firstName} ${row.employeeInfo.lastName}`;
+                      return `${row.employeeInfo?.firstName} ${row.employeeInfo?.lastName}`;
                     },
                     header: () => <span>Employee</span>,
                     enableSorting: true,
@@ -559,7 +562,7 @@ const AttendanceData = () => {
                   },
                   {
                     id: 'jobPosition',
-                    accessorFn: (row) => row.employeeInfo.role,
+                    accessorFn: (row) => row.employeeInfo?.role,
                     header: () => <span>Job Position</span>,
                     enableSorting: true,
                   },

@@ -1,3 +1,8 @@
+import { useParams } from 'react-router-dom';
+import { convertDateTimeToArray } from 'utils/common';
+import { useSelector } from 'react-redux';
+import { selectAttendanceRequestByUId } from 'store/slices/attendanceRequestSlice';
+
 import {
   Button,
   Accordion,
@@ -7,7 +12,26 @@ import {
   InputText,
 } from '@bluesilodev/timhutcomponents';
 
+
 const ApprovalPage = () => {
+
+  const { uId } = useParams();
+
+  const employeeDetails = useSelector((state) => selectAttendanceRequestByUId(uId)(state));
+
+  console.log(employeeDetails)
+
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   return (
     <div className='main pl-6 pr-6 mt-10'>
       <div className='flex justify-between'>
@@ -19,6 +43,7 @@ const ApprovalPage = () => {
             label={'Reject'}
             className={'w-[220px] h-[50px] mr-4'}
             style='solid'
+            color={'red'}
           />
           <Button
             label={'Approve'}
@@ -117,25 +142,19 @@ const ApprovalPage = () => {
               <div className='grid grid-cols-2 gap-6 '>
                 <div className='col-span-1'>
                   <InputDate
-                    label={'Actual Punch In Date'}
+                    label={'Punch In Date'}
                     classname={' h-[58px]'}
-                    placeholder={'Punch In'}
-                  />
-                </div>
-                <div className='col-span-1 mr-6'>
-                  <InputTime label={'Actual Punch Out Time'} required={false} />
-                </div>
-                <div className='col-span-1'>
-                  <InputDate
-                    label={'Request Punch In Date'}
-                    classname={' h-[58px]'}
-                    placeholder={'Punch In'}
+                    required={false}
+                    value={formatDate(employeeDetails.punchIn)}
+                    disable={true}
                   />
                 </div>
                 <div className='col-span-1 mr-6'>
                   <InputTime
-                    label={'Request Punch Out Date'}
+                    label={'Punch in Time'}
                     required={false}
+                    value={convertDateTimeToArray(employeeDetails.punchIn)}
+                    disable={true}
                   />
                 </div>
                 <div className='col-span-2 mr-6'>
@@ -143,15 +162,32 @@ const ApprovalPage = () => {
                     label={'GPS Tracking'}
                     classname={'h-[58px]'}
                     disable={true}
-                    value={'On Duty'}
+                    required={false}
+                    placeholder={employeeDetails.punchInGps}
                   />
                 </div>
                 <div className='col-span-2 mr-6'>
-                  <TextArea required={false} label={'Description'} />
+                  <InputText
+                    classname={'h-[58px]'}
+                    label={'Description'}
+                    placeholder={employeeDetails.punchInDesc}
+                    disable={true}
+                    required={false}
+                  />
                 </div>
               </div>
             </div>
-            <div className='w-[300px] h-[300px] bg-amber-400 mr-10'></div>
+
+            <div className='bg-gray-200 p-4 w-[400px] mr-10 rounded-md'>
+              <p className='text-xs font-bold'>Attachment</p>
+              <div className='mt-4'>
+                <img
+                  src={employeeDetails.punchInImage}
+                  alt='Attachment'
+                  className='w-full h-auto rounded-lg'
+                />
+              </div>
+            </div>
           </div>
         </Accordion>
       </div>
@@ -166,11 +202,18 @@ const ApprovalPage = () => {
                   <InputDate
                     label={'Punch Out Date'}
                     classname={' h-[58px]'}
-                    placeholder={'Punch In'}
+                    required={false}
+                    disable={true}
+                    value={formatDate(employeeDetails.punchOut)}
                   />
                 </div>
                 <div className='col-span-1 mr-6'>
-                  <InputTime label={'Punch Out Time'} required={false} />
+                  <InputTime
+                    label={'Punch Out Time'}
+                    required={false}
+                    disable={true}
+                    value={convertDateTimeToArray(employeeDetails.punchOut)}
+                  />
                 </div>
 
                 <div className='col-span-2 mr-6'>
@@ -178,89 +221,156 @@ const ApprovalPage = () => {
                     label={'GPS Tracking'}
                     classname={'h-[58px]'}
                     disable={true}
-                    value={'On Duty'}
+                    required={false}
+                    placeholder={employeeDetails.punchOutGps}
                   />
                 </div>
-                <div className='col-span-2 mr-6'>
-                  <TextArea label={'Description'} required={false} />
-                </div>
-              </div>
-            </div>
-            <div className='w-[300px] h-[300px] bg-amber-400 mr-10'></div>
-          </div>
-        </Accordion>
-      </div>
-
-      {/* Break*/}
-      <div className='mt-8'>
-        <Accordion title={'Break #1'}>
-          <div className='p-4 flex'>
-            <div className='w-full'>
-              <div className='grid grid-cols-2 gap-6 '>
-                <div className='col-span-1'>
-                  <InputDate
-                    label={'Break Date'}
-                    classname={' h-[58px]'}
-                    placeholder={'Punch In'}
-                    value={'24-08-2023'}
-                  />
-                </div>
-                <div className='col-span-1 mr-6'>
-                  <InputTime label={'Break Time'} required={false} />
-                </div>
-
                 <div className='col-span-2 mr-6'>
                   <InputText
-                    label={'GPS Tracking'}
                     classname={'h-[58px]'}
+                    label={'Description'}
+                    placeholder={employeeDetails.punchOutDesc}
                     disable={true}
-                    value={'On Duty'}
+                    required={false}
                   />
-                </div>
-                <div className='col-span-2 mr-6'>
-                  <TextArea label={'Description'} required={false} />
                 </div>
               </div>
             </div>
-            <div className='w-[300px] h-[300px] bg-amber-400 mr-10'></div>
+            <div className='bg-gray-200 p-4 w-[400px] mr-10 rounded-md'>
+              <p className='text-xs font-bold'>Attachment</p>
+              <div className='mt-4'>
+                <img
+                  src={employeeDetails.punchOutImage}
+                  alt='Attachment'
+                  className='w-full h-auto rounded-lg'
+                />
+              </div>
+            </div>
           </div>
         </Accordion>
       </div>
 
-      {/* Resume*/}
-      <div className='mt-8 mb-8'>
-        <Accordion title={'Resume #1'}>
-          <div className='p-4 flex'>
-            <div className='w-full'>
-              <div className='grid grid-cols-2 gap-6 '>
-                <div className='col-span-1'>
-                  <InputDate
-                    label={'Resume Date'}
-                    classname={' h-[58px]'}
-                    placeholder={'Punch In'}
-                  />
-                </div>
-                <div className='col-span-1 mr-6'>
-                  <InputTime label={'Resume Time'} required={false} />
-                </div>
+      {/* Break
+      {employeeDetails.breaks.map((breakItem, index) => (
+        <div className='mt-8'>
+          <Accordion title={`Break #${index + 1}`} key={breakItem._id}>
+            <div className='p-4 flex'>
+              <div className='w-full'>
+                <div className='grid grid-cols-2 gap-6 '>
+                  <div className='col-span-1'>
+                    <InputDate
+                      label={'Break Date'}
+                      classname={' h-[58px]'}
+                      required={false}
+                      value={formatDate(breakItem.breakTime)}
+                      disable={true}
+                    />
+                  </div>
+                  <div className='col-span-1 mr-6'>
+                    <InputTime
+                      label={'Break Time'}
+                      required={false}
+                      value={convertDateTimeToArray(breakItem.breakTime)}
+                      disable={true}
+                    />
+                  </div>
 
-                <div className='col-span-2 mr-6'>
-                  <InputText
-                    label={'GPS Tracking'}
-                    classname={'h-[58px]'}
-                    disable={true}
-                    value={'On Duty'}
-                  />
+                  <div className='col-span-2 mr-6'>
+                    <InputText
+                      label={'GPS Tracking'}
+                      classname={'h-[58px]'}
+                      disable={true}
+                      placeholder={breakItem.breakGps}
+                      required={false}
+                    />
+                  </div>
+                  <div className='col-span-2 mr-6 h-[100px]'>
+                    <InputText
+                      label={'Description'}
+                      classname={'h-[100px]'}
+                      disable={true}
+                      placeholder={breakItem.breakDesc}
+                      required={false}
+                    />
+                  </div>
                 </div>
-                <div className='col-span-2 mr-6'>
-                  <TextArea label={'Description'} required={false} />
+              </div>
+              <div className='bg-gray-200 p-4 w-[400px] mr-10 rounded-md'>
+                <p className='text-xs font-bold'>Attachment</p>
+                <div className='mt-4'>
+                  <img
+                    src={breakItem.breakImage}
+                    alt='Attachment'
+                    className='w-full h-auto rounded-lg'
+                  />
                 </div>
               </div>
             </div>
-            <div className='w-[300px] h-[300px] bg-amber-400 mr-10'></div>
-          </div>
-        </Accordion>
-      </div>
+          </Accordion>
+        </div>
+      ))} */}
+
+      {/* Resume
+      {employeeDetails.breaks.map((breakItem, index) => (
+        <div className='mt-8 mb-8'>
+          <Accordion title={`Resume #${index + 1}`} key={breakItem._id}>
+            <div className='p-4 flex'>
+              <div className='w-full'>
+                <div className='grid grid-cols-2 gap-6 '>
+                  <div className='col-span-1'>
+                    <InputDate
+                      label={'Resume Date'}
+                      classname={' h-[58px]'}
+                      value={formatDate(breakItem.returnFromBreak)}
+                      disable={true}
+                      required={false}
+                    />
+                  </div>
+                  <div className='col-span-1 mr-6'>
+                    <InputTime
+                      label={'Resume Time'}
+                      value={convertDateTimeToArray(
+                        breakItem.returnFromBreak
+                      )}
+                      required={false}
+                      disable={true}
+                    />
+                  </div>
+
+                  <div className='col-span-2 mr-6'>
+                    <InputText
+                      label={'GPS Tracking'}
+                      classname={'h-[58px]'}
+                      disable={true}
+                      placeholder={breakItem.returnGps}
+                      required={false}
+                    />
+                  </div>
+                  <div className='col-span-2 mr-6'>
+                    <InputText
+                      label={'Description'}
+                      classname={'h-[58px]'}
+                      disable={true}
+                      placeholder={breakItem.returnDesc}
+                      required={false}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className='bg-gray-200 p-4 w-[400px] mr-10 rounded-md'>
+                <p className='text-xs font-bold'>Attachment</p>
+                <div className='mt-4'>
+                  <img
+                    src={breakItem.returnImage}
+                    alt='Attachment'
+                    className='w-full h-auto rounded-lg'
+                  />
+                </div>
+              </div>
+            </div>
+          </Accordion>
+        </div>
+      ))} */}
     </div>
   );
 };

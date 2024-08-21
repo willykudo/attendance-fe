@@ -105,14 +105,14 @@ const EditAttendance = () => {
     return `${day}/${month}/${year}`;
   };
 
-  const formatTime = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-  };
+  // const formatTime = (dateString) => {
+  //   const date = new Date(dateString);
+  //   return date.toLocaleTimeString('en-US', {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     hour12: false,
+  //   });
+  // };
 
   // Fungsi untuk memperbarui data secara rekursif
   const updateNestedData = (originalData, newData) => {
